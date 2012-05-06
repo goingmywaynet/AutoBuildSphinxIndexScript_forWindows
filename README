@@ -1,0 +1,44 @@
+==================================================
+Sphinx Index Auto Build Script for Windows Power Shell
+==================================================
+
+Version Data
+==================================================
+
+Version: 0.1 alpha
+Author : Joey Chen / joey-tech(at)goingmyway.net
+Date : 2012/05/06
+
+Description
+==================================================
+
+Windowsの共有フォルダに対してインデックスをつける為にsphinxを利用する
+スクリプトです。
+
+各フォルダに指定のファイル名 (000_IndexFile.txtなど) にReSTで書くことで
+それを収集し、sphinx で html 化します。
+
+具体的には以下の処理を行います。
+
+ 1. 指定ディレクトリ配下に対して、指定されたファイル名を再帰検索
+    （各ディレクトリを検索する）
+
+ 2. そのファイルを .txt から UTF-8 の .rst 化し、指定の(Sphinx source)
+     フォルダにcopy。この際、copy元フォルダへのリンクを .rst ファイルに追記。
+     
+ 3. Sphinx の make.bat html を実行し、HTMLをビルド
+ 
+ 4. ビルドされた _build/html フォルダを指定の公開用ディレクトリにCopy
+ 
+ 
+Usage
+===================================================
+
+Dir_* と File_* の変数を定義した上で本ファイルをWindows PowerShell で実行する。
+
+Files
+====================================================
+
+README : このファイル
+CreateIndex.js  : スクリプト本体
+CreateIndex.zip : windows環境でzipされたスクリプト本体
