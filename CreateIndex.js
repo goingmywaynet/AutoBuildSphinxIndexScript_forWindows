@@ -1,12 +1,12 @@
 /* Create Knowledge Base Index Tool
- * Version 0.1
+ * Version 0.3
  * Author : Joey Chen
- * Date    : 2012/05/06
+ * Date   : 2012/05/07
  * 
  * Usage :
  *    実行には windows で実行可能な sphinx 環境が必要です。
- *    以下の Dir_* と File_ の変数を定義した上で本ファイルを
- *    Windows PowerShell で実行することで、指定されたファイル名[インデックスファイル]
+ *    以下の Dir_* と File_* の変数を定義した上で本ファイルを
+ *    Windows PowerShell で実行することで、指定されたファイル名(インデックスファイル)
  *    を再帰的に検索して .rst ファイル化し、sphinx の html ファイルを build します。
 */
 
@@ -18,17 +18,21 @@
 var Dir_sphinxWorkDir = "C:\\100_KnowledgeBase\\IndexPage";
     // Sphinxの.rstを配置するディレクトリ
 
+var Dir_sphinxMakeDir = Dir_sphinxWorkDir;
+    // make.batフォルダの置き場所
+    // 上記と基本的に同じでよいはずだが、変更している場合は記載すること
+
 var Dir_sphinxWorkDirHtml = "C:\\100_KnowledgeBase\\IndexPage\\_build\\html";
     // Sphinxによってビルドされたhtmlフォルダ
 
-var Dir_indexSearchDir = "C:\\100_KnowledgeBase";
+var Dir_indexSearchDir = "\\\\Windows_Share\\Folder\\path";
     // インデックスファイルをサーチする対象
     // このフォルダ配下に対して再帰的にファイルをサーチする
 
 var File_indexFileName = "000_IndexFile.txt";
     // 検索されるインデックスファイル名
 
-var Dir_indexHtmlDir = "C:\\Users\\joey\\Downloads\\html";
+var Dir_indexHtmlDir = "\\\\Windows_Share\\Folder\\html\\path";
     // Sphinxによってビルドされたhtmlを配置する公開ディレクトリ場所
 
 var headerText = "Welcome to KnowledgeBase's documentation!\n=========================================\n\nContents:\n\n.. toctree::\n\t:maxdepth: 2\n\n";
@@ -81,13 +85,13 @@ function createSphinxHtml() {
 
 
     objFileSys = WScript.CreateObject("Scripting.FileSystemObject");	// Create File System Object
-    _sphinxExecPath = objFileSys.BuildPath(Dir_sphinxWorkDir,"make.bat") + " html";
+    _sphinxExecPath = objFileSys.BuildPath(Dir_sphinxMakeDir,"make.bat") + " html";
 
-    //WScript.echo(_sphinxExecPath);
+    // WScript.echo(_sphinxExecPath);
     // DEBUG
 
     objShell = WScript.CreateObject("WScript.shell");	// Create Shell Object
-    objShell.CurrentDirectory = objFileSys.BuildPath(Dir_sphinxWorkDir,"");
+    objShell.CurrentDirectory = objFileSys.BuildPath(Dir_sphinxMakeDir,"");
 
     objShell.Run(_sphinxExecPath , 1 , true);
 
@@ -173,13 +177,14 @@ function copyFileToSphinxWorkdir(_FolderItem) {
     headerText = headerText + "\t" + _FolderItem.parent +"\n";
     _text = adoLoadText(_FolderItem.path , '_autodetect');
 
-    objParentFolder = objFileSys.GetFolder( _FolderItem.parent );
-    _addText = replaceString(new String(objParentFolder.path) , "\\" , "\\\\" , "g");
+    _addText = replaceString(new String(_FolderItem.path) , " " , "%20" , "g");
+    _addText = replaceString(_addText , "\\" , "/" , "g");
+    _addText = replaceString(_addText , File_indexFileName , "" , "g");
 
     // WScript.echo("File " + _FolderItem.path + "\n add " + _addText );
     // DEBUG
 
-    adoSaveText(_destFilePath, _text + "`Contents Folder <" + _addText +">`_ \n" , 'utf-8');
+    adoSaveText(_destFilePath, _text + "\n\n`Contents Folder <file:" + _addText +">`_ \n" , 'utf-8');
 
 }
 
