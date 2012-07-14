@@ -1,0 +1,136 @@
+<job>
+<script language="JavaScript" src="./Lib/MessageWindow.js"></script>
+<script language="JavaScript" src="./Lib/ADOStream.js"></script>
+<script language="JavaScript" src="./Lib/Strings.js"></script>
+<script language="JavaScript" src="./Lib/Files.js"></script>
+<script language="JavaScript">
+
+/* Create Mecab Dic for Knowledge Base Tool
+*  Version 0.2
+*  Author : Joey Chen
+*  Date   : 2012/06/05
+*  
+*  Usage :
+*     実行には windows で実行可能な sphinx 環境が必要です。
+*     以下の Dir_* と File_ の変数を定義した上で本ファイルを
+*     Windows PowerShell で実行することで、指定されたファイル名[インデックスファイル]
+*     を再帰的に検索して .rst ファイル化し、sphinx の html ファイルを build します。
+*
+*  Update Log :
+*
+*     Version 0.1 2012/06/05
+*		開発版作成
+*
+*     Version 0.2
+*		WSFファイル化（外部ライブラリ利用化）
+*
+*/
+
+// ************** Constant Definition ***********
+
+// 注意：以下各ディレクトリ変数を宣言する際は\を\\と書いて下さい。
+
+
+var Dir_MeCabMainDicDir = "D:\\MeCab\\dic\\ipadic";
+    // MeCabのメイン辞書配置ディレクトリ
+
+var Dir_MeCabBuildDicDir = "D:\\MeCab\\dic\\ipadic";
+    // 生成したユーザ辞書の置き場所（ファイル名含まず）
+
+var Dir_MeCabBinDir = "D:\\MeCab\\bin";
+	// mecab-dict-index.exe があるフォルダ
+
+var Dir_MeCabDicCSVDir = "D:\\KnowledgeBase\\001_検索辞書";
+    // 辞書生成対象CSVファイル（共有フォルダ側）
+
+var File_dicSeedsFilePath = "D:\\KnowledgeBase\\001_検索辞書\\KeyWordDic.txt";
+	// CSVファイルを生成するための文字列ファイル（CRLF改行毎にキーワードを配置）
+
+var File_MeCabDicCSV = "userdic.csv";
+	// 辞書生成元CSVファイル名
+
+var File_MecabDic = "userdic.dic";
+	// 辞書生成先ファイル名
+
+
+
+// ************** Main ***************
+
+// CSVファイルを生成するための文字列ファイルを元に、辞書生成用CSVファイルを作成
+createCSVFile(File_dicSeedsFilePath, Dir_MeCabDicCSVDir +"\\"+ File_MeCabDicCSV);
+
+// 辞書生成用CSVファイルをローカルに取得
+Files_copyFile(Dir_MeCabDicCSVDir +"\\"+ File_MeCabDicCSV, Dir_MeCabBuildDicDir +"\\");
+
+// 辞書を生成する
+createMeCabDic();
+
+// ************* Functions *********************
+
+
+// Create CSV File
+function createCSVFile(_seedsFilePath,_csvFilePath) {
+
+	var _words;
+	var _wordsArray = new Array();
+	var _string = new String();
+	var CR = String.fromCharCode(13);
+	var LF = String.fromCharCode(10);
+
+	try {
+		_wards = ADOStream_Load(_seedsFilePath,"_autodetect");
+	} catch(e) {
+		MessageWindow_warn("ERROR", "辞書ファイルの取得に失敗しました", 0);
+		retrn -1;
+	}
+
+	//MessageWindow_info("Words", _wards, 0);
+	// DEBUG
+
+	var _lines = _wards.split(CR+LF);
+
+	for (var i = 0; i < _lines.length; i++) {
+		if ( _lines[i] != "" ) {
+			_string += _lines[i] + ",,,0,名詞,一般,*,*,*,*," + _lines[i] + ",*,*\n";
+		}
+	}
+
+	//MessageWindow_info("Output", _string , 1);
+	// DEBUG
+
+	try {
+		ADOStream_Save(_csvFilePath, _string, "shift_jis")
+	} catch (e) {
+		MessageWindow_warn("ERROR", "辞書ファイルの作成に失敗しました", 0);
+		retrn -1;
+	}
+
+}
+
+
+// Run mecab-dict-index.exe
+function createMeCabDic() {
+
+    var objShell;
+    var objFileSys;
+    var _sphinxExecPath;
+
+
+    objFileSys = WScript.CreateObject("Scripting.FileSystemObject");	// Create File System Object
+    _execPath = objFileSys.BuildPath(Dir_MeCabBinDir,"mecab-dict-index.exe") + " -d" + Dir_MeCabMainDicDir + " -u " + File_MecabDic + " -f sjis -t utf8 " + File_MeCabDicCSV;
+
+    // WScript.echo(_execPath);
+    // DEBUG
+
+    objShell = WScript.CreateObject("WScript.shell");	// Create Shell Object
+    objShell.CurrentDirectory = objFileSys.BuildPath(Dir_MeCabBuildDicDir,"");
+
+    objShell.Run(_execPath , 1 , true);
+
+}
+
+
+
+
+</script>
+</job>

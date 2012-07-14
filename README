@@ -5,9 +5,9 @@ Sphinx Index Auto Build Script for Windows Power Shell
 Version Data
 ==================================================
 
-Version: 0.3 alpha
+Version: 0.5
 Author : Joey Chen / joey-tech(at)goingmyway.net
-Date : 2012/05/06
+Date : 2012/06/15
 
 Description
 ==================================================
@@ -15,8 +15,8 @@ Description
 Windowsの共有フォルダに対してインデックスをつける為にsphinxを利用する
 スクリプトです。
 
-各フォルダに指定のファイル名 (000_IndexFile.txtなど) にReSTで書くことで
-それを収集し、sphinx で html 化します。
+各フォルダに指定のファイル名 (000_IndexFile.txtなど)をアンカーファイルとして、
+これにReSTで書くことでそれを収集し、sphinx で html 化します。
 
 具体的には以下の処理を行います。
 
@@ -30,15 +30,101 @@ Windowsの共有フォルダに対してインデックスをつける為にsphi
  
  4. ビルドされた _build/html フォルダを指定の公開用ディレクトリにCopy
  
+また、Sphinx の日本語検索オプション辞書として利用可能な MeCAB のユーザ辞書
+を生成するスクリプト CreateDic.wsf も付属します。
+
  
-Usage
+Script Usage
 ===================================================
 
-Dir_* と File_* の変数を定義した上で本ファイルをWindows PowerShell で実行する。
+sphinx と MeCAB の環境を整えた上で、
+CreateDic.wsf と CreateIndex.wsf と、 Libフォルダを同一のフォルダに配置します。
+
+CreateIndex.wsf
+--------------------------------
+
+Dif_* 、Dir_* 、 File_* の変数を定義した上で本ファイルをWindowsで実行する。
+
+CreateDic.wsf
+--------------------------------
+
+Dir_* 、 File_* の変数を定義した上で本ファイルをWindowsで実行する。
+
+なお、windows環境での sphinx 動作環境の整備例は
+http://note.sicafe.net/sphinx_memo/installAtWinNoAdmin.html
+を参考にしてみてください。
 
 Files
 ====================================================
 
 README : このファイル
-CreateIndex.js  : スクリプト本体
-CreateIndex.zip : windows環境でzipされたスクリプト本体
+CreateIndex.wsf  : Sphinx の HTML ビルド スクリプト本体
+CreateDic.wsf : MeCAB の ユーザ辞書更新スクリプト本体
+Lib/* : 上記スクリプトから参照される .js ライブラリ
+
+
+より具体的な使い方
+====================================================
+
+Dir_indexSearchDir変数で定義したフォルダ の配下に
+任意の名前のフォルダを作成し、
+
+::
+
+  000_IndexFile.txt
+
+というアンカーファイルを作ると、
+
+1. そのファイルの内容を元に HTMLファイルが生成されます。
+2. 各文書内には、作成したディレクトリに対するリンクが末尾に *Contents* *Folder* という名前で配置されます。
+
+なお、この HTMLファイル は スクリプトによって自動的に アンカーファイルの内容を参照し、Sphinx <http://sphinx-users.jp/index.html> と呼ばれるドキュメント生成ツールを利用して生成されます。
+
+フォルダとファイルの作成例
+--------------------------------
+
+以下の様なフォルダとファイル構成を作成すると、ツールは自動的に
+アンカーファイルの中身を元に HTML ファイルを作成して、
+その内容を HTMLファイル  に追記します。
+
+::
+
+  ¥¥¥¥ServerName¥¥KnoledgeBaseFolder
+        ¥
+        ¥-- 20120507_KnowledgeBaseの使い方
+                   ¥
+                 ¥-- 000_IndexFile.txt
+                 ¥-- メモ.pdf
+                 ¥-- 画面コピー.png
+
+HTMLファイルの内容は アンカーファイル のみが反映されますが、HTMLファイルの末尾に当該フォルダへのリンクが自動生成
+されるので、そのリンクを通じて他の（PDFなどの）ファイルを見ることができます。
+
+アンカーファイルの文法について
+--------------------------------
+
+アンカーファイルは一般的なWindowsで扱うテキストファイル
+
+- ShiftJIS 文字コード
+- CRLF 改行コード
+
+で記述する必要がありますが、基本的にはWindows付属の ノートパット（Notepad） アプリで十分書くことができます。
+
+めんどくさい場合は、既設の他のフォルダ配下にあるファイルを流用したりしたほうが早いかもしれません。
+
+記述文法については、 reStructuredText という文法を利用しています。
+
+詳細については `reStructuredText入門 <http://sphinx.shibu.jp/rest.html>`_ を参照してください。
+
+さらに活用したい場合は、 `Sphinx 逆引き辞典 <http://sphinx-users.jp/reverse-dict/index.html>`_ についても参考になります。
+
+
+HTMLファイルの自動生成について
+--------------------------------
+
+端末のタスクスケジューラーにて定期的に動作させることができます。
+
+生成された時間は、Knowledge Base のトップページに ( *月* / *日* *時* : *分* 生成） と表示されます。
+
+タスクスケジューラなので、この自動生成は、コンテンツの変化有無にかかわらず発生します。
+

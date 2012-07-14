@@ -6,9 +6,9 @@
 <script language="JavaScript">
 
 /* Create Knowledge Base Index Tool
-*  Version 0.4
+*  Version 0.5
 *  Author : Joey Chen
-*  Date   : 2012/06/06
+*  Date   : 2012/06/15
 *  
 *  Usage :
 *     実行には windows で実行可能な sphinx 環境が必要です。
@@ -30,12 +30,17 @@
 *       .rst ファイル生成前に、既存 .rst ファイルを削除する処理を追加
 *       共有フォルダ上の conf.py ファイルを取得する様に処理を変更
 * 
+*     Version 0.5 2012/06/15
+*       第1階層のフォルダを元に複数の toctree を生成する様処理を追加
+*       なお、第1階層直下にインデックスファイルを置く必要がある。（空ファイルでもよい）
 */
 
 // ************** Constant Definition ***********
 
 // 注意：以下各ディレクトリ変数を宣言する際は\を\\と書いて下さい。
-
+//       ネットワーク上の共有フォルダも指定できます（\\\\hostName\\folderName）
+var Dif_appName = "My Knowledge Base";
+    // このアプリケーションの名前（実動作にはたいして関係ないので適当でよい）
 
 var Dir_sphinxWorkDir = "D:\\KnowledgeBase.sphinx\\source";
     // Sphinxの.rstを配置するディレクトリ
@@ -61,15 +66,19 @@ var File_confPy = "D:\\KnowledgeBase\\conf.py";
 	// Sphinx ビルド設定ファイル(conf.py)の保存場所
 
 var dt = new Date();
-var headerText = "my Knowledge Base\n=========================================\n\n(" + parseInt(dt.getMonth()+1) + "/" + dt.getDate() + " " + dt.getHours() +":"+ dt.getMinutes() + " 生成) \n\nContents:\n\n.. toctree::\n\t:maxdepth: 1\n\n";
+var headerText = "\n=========================================\n" + Dif_appName + "\n=========================================\n\n(" + parseInt(dt.getMonth()+1) + "/" + dt.getDate() + " " + dt.getHours() +":"+ dt.getMinutes() + " 生成) \n\n";
 var footerText = "\n";
     // Sphinxのindex.rstファイル生成用テキスト
     // Sphinxを熟知しないかぎり、上記２変数は変更しないでください
 
+var Num_FolderDepth = new Number();
+Num_FolderDepth = 0;
+	// フォルダ階層の深さ管理用変数
+
 // ************** Main ***************
 
 // 開始表示
-MessageWindow_info("my Knowledge Base", "ファイル更新を開始します\nこのメッセージは自動で消えます", 1)
+MessageWindow_info(Dif_appName, "ファイル更新を開始します\nこのメッセージは自動で消えます", 1);
 
 // 既設 .rst ファイルを削除する
 Files_deleteFile(Dir_sphinxWorkDir+"\\*.rst");
@@ -90,7 +99,7 @@ createSphinxHtml();
 uploadSphinxHtml(Dir_sphinxWorkDirHtml, Dir_indexHtmlDir);
 
 // 終了表示
-MessageWindow_info("my Knowledge Base", "ファイル更新完了しました\nこのメッセージは自動で消えます", 2)
+MessageWindow_info(Dif_appName, "ファイル更新完了しました\nこのメッセージは自動で消えます", 2);
 
 
 // ************* Functions *********************
@@ -129,8 +138,7 @@ function getFilesFromRecursiveDir (_SourceDir) {
 	objFolderItems = objFolder.Items();			// Get Items From Folder Object
 
 	// WScript.echo(_SourceDir + " Item Count is " + objFolderItems.count);
-        // DEBUG
-
+    // DEBUG
 
 	getFolderItemNames(objFolderItems);
 
@@ -147,30 +155,36 @@ function getFolderItemNames(_tmpFolderItems) {
     var objItem;
     var i;
 
-    for (i=0;i<_tmpFolderItems.count;i++) {
+	for (i=0;i<_tmpFolderItems.count;i++) {
 
-        objItem = _tmpFolderItems.Item(i);
+		objItem = _tmpFolderItems.Item(i);
 
-        if (objItem.IsFolder==true) {
+		if (objItem.IsFolder==true) {
+			if (objItem.path != Dir_sphinxWorkDir) {
 
-	   if (objItem.path != Dir_sphinxWorkDir) {
-	        objFolderItemsB = objItem.GetFolder;
-                getFolderItemNames(objFolderItemsB.Items());
-	   }
+				Num_FolderDepth ++;
 
+				objFolderItemsB = objItem.GetFolder;
+				getFolderItemNames(objFolderItemsB.Items());
+
+				Num_FolderDepth --;
+			}
         } else {
+			if (objItem.name==File_indexFileName) {
 
-	   if (objItem.name==File_indexFileName) {
+				//MessageWindow_msg("getFolderItemNames", 
+				//"Folder Depth = "+ Num_FolderDepth + "\nParent Name = " + objItem.parent + "\nItem count = " + _tmpFolderItems.count , "2");
+				// DEBUG
+				if (Num_FolderDepth < 2) {
+					headerText = headerText + objItem.parent +":\n========================================================================\n\n.. toctree::\n\t:maxdepth: 1\n\n";
+				}
 
-		   // WScript.echo("got File " + objItem.path + "\nParent is " + objItem.parent + "\ntype is " + objItem.type);
-		   // DEBUG
+				copyFileToSphinxWorkdir( objItem );
 
-		   copyFileToSphinxWorkdir( objItem );
-	   }
+			}
+		}
+	}
 
-        }
-
-    }
 
     objItem = null;
     objFolderItemsB = null;
