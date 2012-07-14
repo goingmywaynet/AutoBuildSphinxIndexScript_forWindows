@@ -1,0 +1,257 @@
+﻿<job>
+<script language="JavaScript" src="./Lib/MessageWindow.js"></script>
+<script language="JavaScript" src="./Lib/ADOStream.js"></script>
+<script language="JavaScript" src="./Lib/Strings.js"></script>
+<script language="JavaScript" src="./Lib/Files.js"></script>
+<script language="JavaScript">
+
+/* Create Knowledge Base Index Tool
+*  Version 0.4
+*  Author : Joey Chen
+*  Date   : 2012/06/06
+*  
+*  Usage :
+*     実行には windows で実行可能な sphinx 環境が必要です。
+*     以下の Dir_* と File_ の変数を定義した上で本ファイルを
+*     Windows PowerShell で実行することで、指定されたファイル名[インデックスファイル]
+*     を再帰的に検索して .rst ファイル化し、sphinx の html ファイルを build します。
+* 
+*  Update Log :
+* 
+*     Version 0.2
+*       実環境に併せてプログラムを変更
+* 
+*     Version 0.3
+*       バグ訂正
+* 
+*     Version 0.4 2012/06/06
+*       WSFファイル化
+*       共用の関数について、外部Libファイル参照化
+*       .rst ファイル生成前に、既存 .rst ファイルを削除する処理を追加
+*       共有フォルダ上の conf.py ファイルを取得する様に処理を変更
+* 
+*/
+
+// ************** Constant Definition ***********
+
+// 注意：以下各ディレクトリ変数を宣言する際は\を\\と書いて下さい。
+
+
+var Dir_sphinxWorkDir = "D:\\KnowledgeBase.sphinx\\source";
+    // Sphinxの.rstを配置するディレクトリ
+
+var Dir_sphinxMakeDir = "D:\\KnowledgeBase.sphinx";
+    // make.batフォルダの置き場所
+    // 上記と基本的に同じでよいはずだが、変更している場合は記載すること
+
+var Dir_sphinxWorkDirHtml = "D:\\KnowledgeBase.sphinx\\build\\html";
+    // Sphinxによってビルドされたhtmlフォルダ
+
+var Dir_indexSearchDir = "D:\\KnowledgeBase";
+    // インデックスファイルをサーチする対象
+    // このフォルダ配下に対して再帰的にファイルをサーチする
+
+var File_indexFileName = "000_IndexFile.txt";
+    // 検索されるインデックスファイル名
+
+var Dir_indexHtmlDir = "D:\\KnowledgeBase.index";
+    // Sphinxによってビルドされたhtmlを配置する公開ディレクトリ場所
+
+var File_confPy = "D:\\KnowledgeBase\\conf.py";
+	// Sphinx ビルド設定ファイル(conf.py)の保存場所
+
+var dt = new Date();
+var headerText = "my Knowledge Base\n=========================================\n\n(" + parseInt(dt.getMonth()+1) + "/" + dt.getDate() + " " + dt.getHours() +":"+ dt.getMinutes() + " 生成) \n\nContents:\n\n.. toctree::\n\t:maxdepth: 1\n\n";
+var footerText = "\n";
+    // Sphinxのindex.rstファイル生成用テキスト
+    // Sphinxを熟知しないかぎり、上記２変数は変更しないでください
+
+// ************** Main ***************
+
+// 開始表示
+MessageWindow_info("my Knowledge Base", "ファイル更新を開始します\nこのメッセージは自動で消えます", 1)
+
+// 既設 .rst ファイルを削除する
+Files_deleteFile(Dir_sphinxWorkDir+"\\*.rst");
+
+// 共有フォルダ上のconf.pyを取得
+Files_copyFile(File_confPy, Dir_sphinxWorkDir +"\\");
+
+// 指定ディレクトリ配下を再帰的にサーチし、インデックスファイルを生成
+getFilesFromRecursiveDir (Dir_indexSearchDir);
+
+// Sphinx用 index.rst を生成
+createRstIndexFile();
+
+// Sphinxの make.bat html を実行
+createSphinxHtml();
+
+// 生成された html ファイルを公開ディレクトリにコピー
+uploadSphinxHtml(Dir_sphinxWorkDirHtml, Dir_indexHtmlDir);
+
+// 終了表示
+MessageWindow_info("my Knowledge Base", "ファイル更新完了しました\nこのメッセージは自動で消えます", 2)
+
+
+// ************* Functions *********************
+
+// Run Sphinx make.bat
+function createSphinxHtml() {
+
+    var objShell;
+    var objFileSys;
+    var _sphinxExecPath;
+
+
+    objFileSys = WScript.CreateObject("Scripting.FileSystemObject");	// Create File System Object
+    _sphinxExecPath = objFileSys.BuildPath(Dir_sphinxMakeDir,"make.bat") + " html";
+
+    // WScript.echo(_sphinxExecPath);
+    // DEBUG
+
+    objShell = WScript.CreateObject("WScript.shell");	// Create Shell Object
+    objShell.CurrentDirectory = objFileSys.BuildPath(Dir_sphinxMakeDir,"");
+
+    objShell.Run(_sphinxExecPath , 2 , true);
+
+}
+
+// Search Index Files and Create rst Files
+// _SourceDir: 検索されるディレクトリ名
+function getFilesFromRecursiveDir (_SourceDir) {
+
+	var objApl;
+	var objFolder;
+	var objFolderItems;
+
+	objApl = WScript.CreateObject("Shell.Application");	// Create Shell Object
+	objFolder = objApl.NameSpace(_SourceDir);		// Create Folder Object
+	objFolderItems = objFolder.Items();			// Get Items From Folder Object
+
+	// WScript.echo(_SourceDir + " Item Count is " + objFolderItems.count);
+        // DEBUG
+
+
+	getFolderItemNames(objFolderItems);
+
+	objFolderItems = null;
+	objFolder = null;
+	objApl = null;
+}
+
+// Recursive Search Function
+// _tmpFolderItems : 再帰検索されるフォルダ名
+function getFolderItemNames(_tmpFolderItems) {
+
+    var objFolderItemsB;
+    var objItem;
+    var i;
+
+    for (i=0;i<_tmpFolderItems.count;i++) {
+
+        objItem = _tmpFolderItems.Item(i);
+
+        if (objItem.IsFolder==true) {
+
+	   if (objItem.path != Dir_sphinxWorkDir) {
+	        objFolderItemsB = objItem.GetFolder;
+                getFolderItemNames(objFolderItemsB.Items());
+	   }
+
+        } else {
+
+	   if (objItem.name==File_indexFileName) {
+
+		   // WScript.echo("got File " + objItem.path + "\nParent is " + objItem.parent + "\ntype is " + objItem.type);
+		   // DEBUG
+
+		   copyFileToSphinxWorkdir( objItem );
+	   }
+
+        }
+
+    }
+
+    objItem = null;
+    objFolderItemsB = null;
+
+}
+
+// create utf-8 .rst File
+// _FolderItem : 見つけたインデックスファイルを渡すことで
+//               当該ファイルをUTF-8化して指定フォルダに配置する
+function copyFileToSphinxWorkdir(_FolderItem) {
+
+    var objFileSys;
+    var _destFileName;
+    var _destFilePath;
+    var _text;
+    var _addText;
+    var objParentFolder;
+
+    objFileSys = WScript.CreateObject("Scripting.FileSystemObject");	// Create File System Object
+    _destFileName = _FolderItem.parent + ".rst";
+    _destFilePath = objFileSys.BuildPath(Dir_sphinxWorkDir,_destFileName);
+
+    headerText = headerText + "\t" + _FolderItem.parent +"\n";
+    _text = ADOStream_Load(_FolderItem.path , '_autodetect');
+
+    // WScript.echo("File " + _FolderItem.path + "\n parent is " + _FolderItem.parent);
+    // DEBUG
+
+	_addText = Strings_replace(new String(_FolderItem.path) , " " , "%20" , "g");
+    _addText = Strings_replace(_addText , "\\" , "/" , "g");
+    _addText = Strings_replace(_addText , File_indexFileName , "" , "g");
+
+    // WScript.echo("File " + _FolderItem.path + "\n add " + _addText );
+    // DEBUG
+
+    ADOStream_Save(_destFilePath, _text + "\n\n`Contents Folder <file:" + _addText +">`_ \n" , 'utf-8');
+
+}
+
+// copy Sphinx HTML Dir to Dir_indexHtmlDir
+// _srcDirPath : コピー元フォルダ
+// _destDirPath: コピー先フォルダ
+//               なお、コピー先フォルダはフォルダ名まで記載する必要がある
+function uploadSphinxHtml(_srcDirPath,_destDirPath) {
+
+    var objFileSys;
+    var _from;
+    var _to;
+
+    objFileSys = WScript.CreateObject("Scripting.FileSystemObject");	// Create File System Object
+    _from = objFileSys.BuildPath(_srcDirPath,"");
+    _to = objFileSys.BuildPath(_destDirPath,"");
+
+    // WScript.echo("copy " + _from + "\nto " + _to);
+    // DEBUG
+
+    objFileSys.CopyFolder(_from, _to, true);
+    
+
+}
+
+// create Sphinx index.rst File
+// index.rst ファイルを生成する
+function createRstIndexFile() {
+
+    var objFileSys;
+    var _destFileName;
+    var _destFilePath;
+
+    objFileSys = WScript.CreateObject("Scripting.FileSystemObject");	// Create File System Object
+    _destFileName = "index.rst";
+    _destFilePath = objFileSys.BuildPath(Dir_sphinxWorkDir,_destFileName);
+
+    ADOStream_Save(_destFilePath,  headerText + footerText, 'utf-8');
+
+    // WScript.echo("create " + _destFilePath +"\n Index file is\n" + headerText + footerText );
+    // DEBUG
+
+}
+
+
+
+</script>
+</job>
