@@ -1,4 +1,4 @@
-<job>
+﻿<job>
 <script language="JavaScript" src="./Lib/MessageWindow.js"></script>
 <script language="JavaScript" src="./Lib/ADOStream.js"></script>
 <script language="JavaScript" src="./Lib/Strings.js"></script>
