@@ -38,7 +38,7 @@ Script Usage
 ===================================================
 
 sphinx と MeCAB の環境を整えた上で、
-CreateDic.wsf と CreateIndex.wsf と、 Libフォルダを同一のフォルダに配置します。
+CreateDic.wsf と CreateIndex.wsf と config.js 、 Libフォルダを同一のフォルダに配置します。
 
 CreateIndex.wsf
 --------------------------------
@@ -50,6 +50,12 @@ CreateDic.wsf
 
 Dir_* 、 File_* の変数を定義した上で本ファイルをWindowsで実行する。
 
+config.js
+--------------------------------
+
+sphinxの動作パスなど、環境別の変数を定義する。
+
+
 なお、windows環境での sphinx 動作環境の整備例は
 http://note.sicafe.net/sphinx_memo/installAtWinNoAdmin.html
 を参考にしてみてください。
@@ -60,6 +66,7 @@ Files
 README : このファイル
 CreateIndex.wsf  : Sphinx の HTML ビルド スクリプト本体
 CreateDic.wsf : MeCAB の ユーザ辞書更新スクリプト本体
+config.js : 環境変数設定ファイル
 Lib/* : 上記スクリプトから参照される .js ライブラリ
 
 
@@ -89,13 +96,13 @@ Dir_indexSearchDir変数で定義したフォルダ の配下に
 
 ::
 
-  ¥¥¥¥ServerName¥¥KnoledgeBaseFolder
-        ¥
-        ¥-- 20120507_KnowledgeBaseの使い方
-                   ¥
-                 ¥-- 000_IndexFile.txt
-                 ¥-- メモ.pdf
-                 ¥-- 画面コピー.png
+  \\\\ServerName\\KnoledgeBaseFolder
+        \
+        \-- 20120507_KnowledgeBaseの使い方
+                   \
+                 \-- 000_IndexFile.txt
+                 \-- メモ.pdf
+                 \-- 画面コピー.png
 
 HTMLファイルの内容は アンカーファイル のみが反映されますが、HTMLファイルの末尾に当該フォルダへのリンクが自動生成
 されるので、そのリンクを通じて他の（PDFなどの）ファイルを見ることができます。
