@@ -1,4 +1,5 @@
 ﻿<job>
+<script language="JavaScript" src="./Lib/reSTconverter.js"></script>
 <script language="JavaScript" src="./Lib/MessageWindow.js"></script>
 <script language="JavaScript" src="./Lib/ADOStream.js"></script>
 <script language="JavaScript" src="./Lib/Strings.js"></script>
@@ -76,11 +77,13 @@ var File_confPy = File_confPy ? File_confPy : "D:\\KnowledgeBase\\conf.py";
 
 // -- ここまで環境設定は Version 0.6 より別ファイルに分離した。 --
 
-var dt = new Date();
-var headerText = "\n=========================================\n" + Dif_appName + "\n=========================================\n\n(" + parseInt(dt.getMonth()+1) + "/" + dt.getDate() + " " + dt.getHours() +":"+ dt.getMinutes() + " 生成) \n\n";
-var footerText = "\n";
-    // Sphinxのindex.rstファイル生成用テキスト
-    // Sphinxを熟知しないかぎり、上記２変数は変更しないでください
+
+var objRest = new reSTconverter();        // reSTconverter.js object
+objRest.setSrcDirPath(Dir_sphinxWorkDir); // objRest に .rst のソースディレクトリを教える
+
+var Num_TocTitleListCount = new Number();
+Num_TocTitleListCount = 0;
+  // toctree のタイトルグループ番号
 
 var Num_FolderDepth = new Number();
 Num_FolderDepth = 0;
@@ -101,7 +104,8 @@ Files_copyFile(File_confPy, Dir_sphinxWorkDir +"\\");
 getFilesFromRecursiveDir (Dir_indexSearchDir);
 
 // Sphinx用 index.rst を生成
-createRstIndexFile();
+//createRstIndexFile();
+objRest.newIndexFile("My Knowledge Base",true);
 
 // Sphinxの make.bat html を実行
 createSphinxHtml();
@@ -171,6 +175,7 @@ function getFolderItemNames(_tmpFolderItems) {
 		objItem = _tmpFolderItems.Item(i);
 
 		if (objItem.IsFolder==true) {
+      // アンカーファイルがないフォルダの場合
 			if (objItem.path != Dir_sphinxWorkDir) {
 
 				Num_FolderDepth ++;
@@ -180,14 +185,18 @@ function getFolderItemNames(_tmpFolderItems) {
 
 				Num_FolderDepth --;
 			}
-        } else {
+    } else {
+      // アンカーファイルがあるフォルダの場合
 			if (objItem.name==File_indexFileName) {
 
 				//MessageWindow_msg("getFolderItemNames", 
 				//"Folder Depth = "+ Num_FolderDepth + "\nParent Name = " + objItem.parent + "\nItem count = " + _tmpFolderItems.count , "2");
 				// DEBUG
+
 				if (Num_FolderDepth < 2) {
-					headerText = headerText + "\n" + objItem.parent +":\n========================================================================\n\n.. toctree::\n\t:maxdepth: 1\n\n";
+          Num_TocTitleListCount++;
+          objRest.pushTocTitleList(objItem.parent); // フォルダ名を toctree のタイトルとして設定する
+					//headerText = headerText + "\n" + objItem.parent +":\n========================================================================\n\n.. toctree::\n\t:maxdepth: 1\n\n";
 				}
 
 				copyFileToSphinxWorkdir( objItem );
@@ -218,13 +227,15 @@ function copyFileToSphinxWorkdir(_FolderItem) {
     _destFileName = _FolderItem.parent + ".rst";
     _destFilePath = objFileSys.BuildPath(Dir_sphinxWorkDir,_destFileName);
 
-    headerText = headerText + "\t" + _FolderItem.parent +"\n";
+    objRest.pushTocItemList(Num_TocTitleListCount, _FolderItem.parent);
+    //headerText = headerText + "\t" + _FolderItem.parent +"\n";
+
     _text = ADOStream_Load(_FolderItem.path , '_autodetect');
 
     // WScript.echo("File " + _FolderItem.path + "\n parent is " + _FolderItem.parent);
     // DEBUG
 
-	_addText = Strings_replace(new String(_FolderItem.path) , " " , "%20" , "g");
+    _addText = Strings_replace(new String(_FolderItem.path) , " " , "%20" , "g");
     _addText = Strings_replace(_addText , "\\" , "/" , "g");
     _addText = Strings_replace(_addText , File_indexFileName , "" , "g");
 

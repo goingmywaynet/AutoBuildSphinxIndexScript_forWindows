@@ -1,4 +1,4 @@
-﻿/* winJSUniteTest.js
+/* winJSUniteTest.js
  * Version 0.1
  * Author  : Joey Chen
  * Date    : 2012/09/17
@@ -48,6 +48,15 @@ function winJSUnitTest(testName) {
         // \u2714 is unicode "check"
     }
   },
+
+  //
+  // Method : showMessage
+  //
+  this.showMsg = function(msg,secondsToWait) {
+    var WshShell = WScript.CreateObject("WScript.Shell");
+    WshShell.Popup(msg , secondsToWait?secondsToWait:0 , this.testName , 64);
+    WshShell = null;
+  }
 
   //
   // Method : showResult
