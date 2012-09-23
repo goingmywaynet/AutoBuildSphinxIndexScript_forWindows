@@ -122,7 +122,45 @@ function reSTconverter(srcDirPath) {
     } 
 
     return filePath;
+  },
+
+  //
+  // Method : rstFileConvert 
+  //
+  this.rstFileConvert = function(inputFileItem, outputDirPath, outputFileName) {
+  //                             FileSystemObject , String , String
+
+    // pre check outputDirPath
+    try {
+      var objFileSys = new ActiveXObject("Scripting.FileSystemObject");
+      var outputDirPath = objFileSys.GetFolder(outputDirPath);
+    } catch (result) {
+      objFileSys = null;
+      MessageWindow_warn("Error at reSTconverter_rstFileConvert", result + " ... fail to open outputDirPath" , 0);
+      return null;
+    }
+
+    // open input File Item
+    try {
+      var inputText = ADOStream_Load(inputFileItem , '_autodetect');
+    } catch (result) {
+      MessageWindow_warn("Error at reSTconverter_rstFileConvert", result + " ... fail to open inputFileItem" , 0);
+      return null;
+    }
+
+    // create rst hyper link to contents folder
+    var inputFileHerfText;
+    inputFileHerfText = Strings_replace(new String(inputFileItem) , " " , "%20" , "g");
+    inputFileHerfText = Strings_replace(inputFileHerfText , "\\" , "/" , "g");
+    inputFileHerfText = Strings_replace(inputFileHerfText , File_indexFileName , "" , "g");
+
+    var outputFilePath = objFileSys.BuildPath(outputDirPath,outputFileName);
+    ADOStream_Save(outputFilePath, inputText + "\n\n`Contents Folder <file:" + inputFileHerfText +">`_ \n" , 'utf-8');
+
+    return outputFilePath;
+
   }
+
     
 }
 
