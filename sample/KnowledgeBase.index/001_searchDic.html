@@ -1,0 +1,149 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Knowledge Base 検索語句辞書定義 &mdash; TestProject 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TestProject 0.1 documentation" href="index.html" />
+    <link rel="next" title="&lt;no title&gt;" href="002_Group-A.html" />
+    <link rel="prev" title="Knowledge Base について (ここから読んで下さい）" href="000_atFirst.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="002_Group-A.html" title="&lt;no title&gt;"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="000_atFirst.html" title="Knowledge Base について (ここから読んで下さい）"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">TestProject 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Knowledge Base 検索語句辞書定義</a><ul>
+<li><a class="reference internal" href="#id1">Knowledge Base 内での検索について</a></li>
+<li><a class="reference internal" href="#id2">ユーザ辞書の更新方法について</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="000_atFirst.html"
+                        title="previous chapter">Knowledge Base について (ここから読んで下さい）</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="002_Group-A.html"
+                        title="next chapter">&lt;no title&gt;</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/001_searchDic.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="knowledge-base">
+<h1>Knowledge Base 検索語句辞書定義<a class="headerlink" href="#knowledge-base" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>Knowledge Base 内での検索について<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Knowledge Base は <a class="reference external" href="http://sphinx-users.jp/index.html">Sphinx</a> の検索機能を利用しており、
+画面右下の <strong>Quick</strong> <strong>search</strong> 欄にて日本語による検索が可能です。</p>
+<p>日本語検索には形態素解析エンジン <a class="reference external" href="http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html">MeCab</a>
+を用いて検索辞書を生成していますが、 <strong>あさ</strong> という一般的な用語がわかっても、 <strong>ほげほげ</strong> など特殊な用語は
+理解できず、これを検索できない場合があります。</p>
+<p>そのため、 <strong>ユーザ辞書</strong> を定義して、特殊な用語を検索できるようにする必要があります。</p>
+</div>
+<div class="section" id="id2">
+<h2>ユーザ辞書の更新方法について<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>ユーザ辞書は本文末尾の Contents Folder 内にある <strong>KeyWordDic.txt</strong> というファイルに
+て定義しています。</p>
+<p>当該ファイルに辞書に追加したい語句を改行で区切って記載することで、ユーザ辞書に語句を
+追加することができます。</p>
+<p>語句登録例</p>
+<div class="highlight-python"><pre>なんとなく
+ほげほげ
+東風平
+保栄茂
+勢理客</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">現時点ではアルファベット(ABC)によるユーザ辞書登録は上手く行っていません。今後の課題とします。</p>
+</div>
+<p><a class="reference external" href="file:D:/AutoBuildSphinxIndexScript/sample/KnowledgeBase/001_searchDic/">Contents Folder</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="002_Group-A.html" title="&lt;no title&gt;"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="000_atFirst.html" title="Knowledge Base について (ここから読んで下さい）"
+             >previous</a> |</li>
+        <li><a href="index.html">TestProject 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, JoeyChen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
