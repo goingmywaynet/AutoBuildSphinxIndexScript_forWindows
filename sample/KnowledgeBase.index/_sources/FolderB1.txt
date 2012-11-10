@@ -14,4 +14,4 @@ Folder B1 Folder's index
 
 
 
-`Contents Folder <file:D:/KnowledgeBase/003_Group-B/FolderB1/>`_ 
+`Contents Folder <file:D:/AutoBuildSphinxIndexScript/sample/KnowledgeBase/003_Group-B/FolderB1/>`_ 

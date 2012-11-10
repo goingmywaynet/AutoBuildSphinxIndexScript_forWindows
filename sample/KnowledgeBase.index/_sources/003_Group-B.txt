@@ -1,3 +1,3 @@
 ﻿
 
-`Contents Folder <file:D:/KnowledgeBase/003_Group-B/>`_ 
+`Contents Folder <file:D:/AutoBuildSphinxIndexScript/sample/KnowledgeBase/003_Group-B/>`_ 

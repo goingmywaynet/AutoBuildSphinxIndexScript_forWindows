@@ -40,10 +40,10 @@ var Dir_MeCabBuildDicDir = "D:\\MeCab\\dic\\ipadic";
 var Dir_MeCabBinDir = "D:\\MeCab\\bin";
 	// mecab-dict-index.exe があるフォルダ
 
-var Dir_MeCabDicCSVDir = "D:\\KnowledgeBase\\001_検索辞書";
-    // 辞書生成対象CSVファイル（共有フォルダ側）
+var Dir_MeCabDicCSVDir = "D:\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase\\001_searchDic";
+    // 辞書生成対象CSVファイルの配置フォルダ（共有フォルダ側）
 
-var File_dicSeedsFilePath = "D:\\KnowledgeBase\\001_検索辞書\\KeyWordDic.txt";
+var File_dicSeedsFilePath = "D:\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase\\001_searchDic\\KeyWordDic.txt";
 	// CSVファイルを生成するための文字列ファイル（CRLF改行毎にキーワードを配置）
 
 var File_MeCabDicCSV = "userdic.csv";
