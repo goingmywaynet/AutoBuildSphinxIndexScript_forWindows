@@ -7,7 +7,7 @@
 
 // 注意：以下各ディレクトリ変数を宣言する際は\を\\と書いて下さい。
 //       ネットワーク上の共有フォルダも指定できます（\\\\hostName\\folderName）
-var Dif_appName = "My Knowledge Base";
+var Dif_appName = "My Knowledge Base on windows7";
     // このアプリケーションの名前（実動作にはたいして関係ないので適当でよい）
 
 var Dir_sphinxWorkDir = "D:\\KnowledgeBase.sphinx\\source";
@@ -31,5 +31,7 @@ var Dir_indexHtmlDir = "D:\\KnowledgeBase.index";
     // Sphinxによってビルドされたhtmlを配置する公開ディレクトリ場所
 
 var File_confPy = "D:\\KnowledgeBase\\conf.py";
-	// Sphinx ビルド設定ファイル(conf.py)の保存場所
+    // Sphinx ビルド設定ファイル(conf.py)の保存場所
 
+var Num_FolderDepth4Titles = "1";
+    // タイトルとして扱うフォルダ階層 必ず1以上を設定すること

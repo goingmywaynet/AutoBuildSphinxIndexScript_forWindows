@@ -18,7 +18,6 @@ var check = new winJSUnitTest("reSTconvertet Unit Test"); //Unit Test Object
 var objRest = new reSTconverter();
 var result;
 
-/*
 
 //
 // check reSTconverter.indexFileName
@@ -44,12 +43,15 @@ with({result : null}) {
 
   objRest.setSrcDirPath("D:\\hogefugehogefuge");
   check.assert("srcDirPath set error1", objRest.srcDirPath == null , "srcDirPath is " + objRest.srcDirPath);
+  check.showMsg("NOTE.\n \"[object Error] .. D:\\hogefugehogefuge error\" is good test result.\n don't worry :)");
 
   objRest.setSrcDirPath("Temp");
   check.assert("srcDirPath set error2", objRest.srcDirPath == null , "srcDirPath is " + objRest.srcDirPath);
+  check.showMsg("NOTE.\n \"[object Error] .. Temp error\" is good test result.\n don't worry :)");
 
   objRest.setSrcDirPath("D:Temp");
   check.assert("srcDirPath set error3", objRest.srcDirPath == null , "srcDirPath is " + objRest.srcDirPath);
+  check.showMsg("NOTE.\n \"[object Error] .. D:Temp error\" is good test result.\n don't worry :)");
 
   var objWScript = new ActiveXObject("WScript.Shell");
   objRest.setSrcDirPath(objWScript.CurrentDirectory);
@@ -104,6 +106,7 @@ with({result : null}){
   //check.showMsg(objRest.tocTitleList.join("\n"));
 }
 
+
 //
 // check reSTconverter.newIndexFile
 //
@@ -112,6 +115,7 @@ with({result : null}) {
   objRest.clearSrcDirPath();
   result = objRest.newIndexFile("hoge",true);
   check.assert("create indexFile error", result == null , "newIndexFile result is " + result );
+  check.showMsg("NOTE.\n \"[object Error] .. fail to open srcDirPath\" is good test result.\n don't worry :)");
 
   
   var objWScript = new ActiveXObject("WScript.Shell");
@@ -137,7 +141,6 @@ with({result : null}) {
   check.showMsg(indexFile);
 }
 
-*/
 
 //
 // check reSTconverter.rstFileConvert
@@ -194,7 +197,7 @@ test section\n\
 
 check.done();
 
-check.showMsg("Check is done.\nPlease delete file index.rst on current directory.");
+check.showMsg("Check is done.\nPlease delete file index.rst , Test_* on current directory.");
 
 </script>
 </job>

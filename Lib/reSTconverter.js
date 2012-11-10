@@ -22,8 +22,8 @@ function reSTconverter(srcDirPath) {
   this.srcDirPath = srcDirPath;       // sphinx source files dir path
   this.tocTitleList = new Array();    // toctree Title list
   this.tocItemList = new Array(2);    // toctree Item Array
-    this.tocItemList[0] = new Array();  // toctree Title id (same as tocTitleList array count)
-    this.tocItemList[1] = new Array();  // toctree item
+  this.tocItemList[0] = new Array();  // toctree Title id (same as tocTitleList array count)
+  this.tocItemList[1] = new Array();  // toctree item
 
   //
   // Setter
@@ -65,9 +65,9 @@ function reSTconverter(srcDirPath) {
 
 
   //
-  // Method : newIndexFile(pageTitle,addDate)
+  // Method : newIndexFile(pageTitle,boolAddDate)
   //
-  this.newIndexFile = function(pageTitle,addDate) {
+  this.newIndexFile = function(pageTitle,boolAddDate) {
 
     // pre check srcDirPath 
     try {
@@ -83,7 +83,7 @@ function reSTconverter(srcDirPath) {
 
     // Default Configure
     var pageTitle = pageTitle ? pageTitle : "my page";
-    var addDate = addDate ? addDate : false;
+    var boolAddDate = boolAddDate ? boolAddDate : false;
 
     // create page title
     var headerText = "\n";
@@ -92,8 +92,8 @@ function reSTconverter(srcDirPath) {
     for (length = pageTitle.length * 2; length >= 0 ;length--) { headerText += "=" }
     headerText += "\n\n"
 
-    // addDate
-    if (addDate) {
+    // boolAddDate
+    if (boolAddDate) {
       var dt = new Date();
       var dateString = "(" + parseInt(dt.getMonth()+1) + "/" + dt.getDate() + " " + dt.getHours() +":"+ dt.getMinutes() + " 生成) \n\n";
       headerText = headerText + dateString;
