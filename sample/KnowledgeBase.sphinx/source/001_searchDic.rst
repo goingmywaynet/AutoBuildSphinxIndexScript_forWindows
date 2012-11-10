@@ -28,11 +28,11 @@ Knowledge Base は `Sphinx <http://sphinx-users.jp/index.html>`_ の検索機能
 
 ::
 
-  需給制御
-  中給
-  フリー
-  気象情報
-  運用計画
+  なんとなく
+  ほげほげ
+  東風平
+  保栄茂
+  勢理客
 
 .. note::
 
