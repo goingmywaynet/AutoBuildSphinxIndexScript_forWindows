@@ -1,0 +1,201 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Knowledge Base について (ここから読んで下さい） &mdash; TestProject 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TestProject 0.1 documentation" href="index.html" />
+    <link rel="next" title="Knowledge Base 検索語句辞書定義" href="001_検索辞書.html" />
+    <link rel="prev" title="My Knowledge Base" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="001_検索辞書.html" title="Knowledge Base 検索語句辞書定義"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="My Knowledge Base"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">TestProject 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Knowledge Base について (ここから読んで下さい）</a><ul>
+<li><a class="reference internal" href="#id1">Knowledge Base の使い方</a></li>
+<li><a class="reference internal" href="#id2">ページの作り方</a><ul>
+<li><a class="reference internal" href="#id3">フォルダとファイルの作成例</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id4">アンカーファイルの文法について</a></li>
+<li><a class="reference internal" href="#html">HTMLファイルの自動生成について</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">My Knowledge Base</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="001_検索辞書.html"
+                        title="next chapter">Knowledge Base 検索語句辞書定義</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/000_初めに.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="knowledge-base">
+<h1>Knowledge Base について (ここから読んで下さい）<a class="headerlink" href="#knowledge-base" title="Permalink to this headline">¶</a></h1>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">このツールは現在β版（仮運用段階）として公開中です。お問い合わせはjoeyまで。</p>
+</div>
+<p><strong>Knowledge</strong> <strong>Base</strong> は <em>ノウハウ</em> や分散する  <em>記録・メモ的なもの</em> を吸収すべく、
+情報となるような PDF や ドキュワークス、Word、Excel、などの多種多様なファイルに対するインデックス（索引）をつくる
+ツールとして作成しました。</p>
+<p>このツールは指定された共有フォルダに対して以下の処理を自動的に行う事を目的としております。</p>
+<ol class="arabic simple">
+<li>フォルダ毎の説明文HTMLファイルを作る</li>
+<li>検索することができる</li>
+<li>メモ程度の簡単な記録を、手軽に残すことができる</li>
+</ol>
+<div class="section" id="id1">
+<h2>Knowledge Base の使い方<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>作成された各フォルダの索引は HTMLファイル にフォルダと同じ順番で羅列されます</li>
+<li>画面の左上にある &#8220;KnowledgeBase <em>バージョン</em> documentation&#8221; のリンクを押すことでトップページに移動します</li>
+<li>右側の Table Of Contents は今の文書索引内にある各段落にへのリンクです</li>
+<li>右側の Previous topic と Next topic はフォルダの前のフォルダもしくは次のフォルダの索引ページへのリンクです</li>
+<li>右側の This Page の Show Source をクリックすることで、現在の索引を生成するためのソースを表示します</li>
+<li>右側の Quick search で文書の検索が可能です。</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>ページの作り方<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>Dir_indexSearchDir変数で定義したフォルダ の配下に
+任意の名前のフォルダを作成し、</p>
+<div class="highlight-python"><pre>000_IndexFile.txt</pre>
+</div>
+<p>というアンカーファイルを作ると、</p>
+<ol class="arabic simple">
+<li>そのファイルの内容を元に HTMLファイルが生成されます。</li>
+<li>各文書内には、作成したディレクトリに対するリンクが末尾に <em>Contents</em> <em>Folder</em> という名前で配置されます。</li>
+</ol>
+<p>なお、この HTMLファイル は
+スクリプトによって自動的に アンカーファイルの内容を参照し、 <a class="reference external" href="http://sphinx-users.jp/index.html">Sphinx</a> と呼ばれる
+ドキュメント生成ツールを利用して生成されます。</p>
+<div class="section" id="id3">
+<h3>フォルダとファイルの作成例<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>以下の様なフォルダとファイル構成を作成すると、ツールは自動的に
+アンカーファイルの中身を元に HTML ファイルを作成して、
+その内容を HTMLファイル  に追記します。</p>
+<div class="highlight-python"><pre>\\\\ServerName\\KnoledgeBaseFolder
+      \
+      \-- 20120507_KnowledgeBaseの使い方
+                 \
+               \-- 000_IndexFile.txt
+               \-- メモ.pdf
+               \-- 画面コピー.png</pre>
+</div>
+<p>HTMLファイルの内容は アンカーファイル のみが反映されますが、HTMLファイルの末尾に当該フォルダへのリンクが自動生成
+されるので、そのリンクを通じて他の（PDFなどの）ファイルを見ることができます。</p>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>アンカーファイルの文法について<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>アンカーファイルは一般的なWindowsで扱うテキストファイル</p>
+<ul class="simple">
+<li>ShiftJIS 文字コード</li>
+<li>CRLF 改行コード</li>
+</ul>
+<p>で記述する必要がありますが、基本的にはWindows付属の ノートパット（Notepad） アプリで十分書くことができます。</p>
+<p>めんどくさい場合は、既設の他のフォルダ配下にあるファイルを流用したりしたほうが早いかもしれません。</p>
+<p>記述文法については、 reStructuredText という文法を利用しています。</p>
+<p>詳細については <a class="reference external" href="http://sphinx.shibu.jp/rest.html">reStructuredText入門</a> を参照してください。</p>
+<p>さらに活用したい場合は、 <a class="reference external" href="http://sphinx-users.jp/reverse-dict/index.html">Sphinx 逆引き辞典</a> についても参考になります。</p>
+</div>
+<div class="section" id="html">
+<h2>HTMLファイルの自動生成について<a class="headerlink" href="#html" title="Permalink to this headline">¶</a></h2>
+<p>端末のタスクスケジューラーにて定期的に動作させることができます。</p>
+<p>生成された時間は、Knowledge Base のトップページに ( <em>月</em> / <em>日</em> <em>時</em> : <em>分</em> 生成） と表示されます。</p>
+<p>タスクスケジューラなので、この自動生成は、コンテンツの変化有無にかかわらず発生します。</p>
+<p><a class="reference external" href="file:D:/KnowledgeBase/000_初めに/">Contents Folder</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="001_検索辞書.html" title="Knowledge Base 検索語句辞書定義"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="My Knowledge Base"
+             >previous</a> |</li>
+        <li><a href="index.html">TestProject 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, JoeyChen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
