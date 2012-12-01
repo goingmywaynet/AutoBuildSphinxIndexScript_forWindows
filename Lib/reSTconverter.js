@@ -87,22 +87,22 @@ function reSTconverter(srcDirPath) {
 
     // create page title
     var headerText = "\n";
-    for (length = pageTitle.length * 2; length >= 0 ;length--) { headerText += "=" }
+    for (length = new String(pageTitle).length * 2; length >= 0 ;length--) { headerText += "=" }
     headerText = headerText + "\n" + pageTitle + "\n";
-    for (length = pageTitle.length * 2; length >= 0 ;length--) { headerText += "=" }
+    for (length = new String(pageTitle).length * 2; length >= 0 ;length--) { headerText += "=" }
     headerText += "\n\n"
 
     // boolAddDate
     if (boolAddDate) {
       var dt = new Date();
-      var dateString = "(" + parseInt(dt.getMonth()+1) + "/" + dt.getDate() + " " + dt.getHours() +":"+ dt.getMinutes() + " 生成) \n\n";
+      var dateString = "(" + parseInt(dt.getMonth()+1) + "/" + dt.getDate() + " " + dt.getHours() +":"+ dt.getMinutes() + " Build) \n\n";
       headerText = headerText + dateString;
     }
 
     // addTocTitle and Items
     for (TitleCount = 1 ; TitleCount <= this.tocTitleList.length ; TitleCount++) {
       headerText = headerText + "\n" + this.tocTitleList[TitleCount-1]+"\n";
-      for (length = this.tocTitleList[TitleCount-1].length * 2; length >= 0 ;length--) { headerText += "=" }
+      for (length = new String(this.tocTitleList[TitleCount-1]).length * 2; length >= 0 ;length--) { headerText += "=" }
       headerText = headerText + "\n.. toctree::\n\t:maxdepth: 1\n\n"
 
       for (ItemCount = 0 ; ItemCount < this.tocItemList[0].length ; ItemCount++) {
