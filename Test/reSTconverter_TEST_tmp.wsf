@@ -164,11 +164,13 @@ this is test code\n\
 \n\
 this is test code for reSTconverter.js\n\
 これは試験ファイルです\n\
-:smblink:`./hoge.txt`\n\
+:smblink:`hoge.txt`\n\
 \n\
 Test Title\n\
 ==========\n\
 \n\
+:smblink:`nu/fuga.txt`\n\
+:smblink:`D:\\AutoBuildSphinxIndexScript\\Lib\\Test_inputFile.txt`\n\
 test section\n\
 \n\
 試験タイトル\n\

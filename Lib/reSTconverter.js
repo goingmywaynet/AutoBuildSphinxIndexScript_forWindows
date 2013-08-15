@@ -156,9 +156,67 @@ function reSTconverter(srcDirPath) {
     inputFileHerfText = reg_deleteFileName.exec(inputFileHerfText)[1];
 
 
-    // replace :smblink:`_currentDir_`
-    var reg_currentDir = /(:smblink:`).\/(.*)/g;
-    inputText = inputText.replace( reg_currentDir , "$1" + inputFileHerfText + "$2" );
+    // check and replace :smblink:`` role
+    var reg_currentDir = /:smblink:`(.+)`/g;
+    var context;
+    while ( (context = reg_currentDir.exec(inputText) )!= null ) {
+
+      //Debug
+      //MessageWindow_warn("Debug","Matched `" + context[0] + "`" +
+      //                           " at position " + context.index+
+      //                           " \$1 is " + context[1],0);
+
+      var FilePath = context[1];
+      
+      // try File Access 1st
+      try {
+        objFile = objFileSys.GetFile( String(FilePath) );
+
+        //Debug
+        MessageWindow_warn("Debug","Get file " + FilePath + 
+                                   " size is " + objFile.Size + " check next .. " ,0);
+
+      } catch (result) {
+
+        //Debug
+        //MessageWindow_warn("Debug","Can not get file " + 
+        //                            FilePath + " result is " + result.description ,0);
+        
+        // replace file path string
+        var reg_pattern = /^(.*\/)?(.+\..+)/;
+        FilePath = FilePath.replace( reg_pattern , inputFileHerfText + "$2" );
+
+        //Debug
+        MessageWindow_warn("Debug","File Path Replace to " + FilePath ,0);
+
+        // try File Access 2nd
+        try {
+          objFile = objFileSys.GetFile( String(FilePath) );
+
+          // Debug
+          MessageWindow_warn("Debug","2nd try Get file " + FilePath +
+                                   " size is " + objFile.Size + " check next .. " ,0);
+
+          var left  = inputText.slice( 0 , context.index );
+          var right = inputText.slice( context.index + context[0].length );
+          inputText = left + ":smblink:`" + FilePath + "`" + right;
+
+
+        } catch (result) {
+
+          // Debug
+          MessageWindow_warn("Debug","2nd Can not get file " + 
+                                      FilePath + " result is " + result.description ,0);
+
+          var left  = inputText.slice( 0 , context.index );
+          var right = inputText.slice( context.index + context[0].length );
+          inputText = left + context[0] + " **<-BROKEN_LINK** " + right;
+
+        }
+      }
+
+    }
+
 
     /*
     var inputTextArray = Strings_parseLine(inputText,"LF");
