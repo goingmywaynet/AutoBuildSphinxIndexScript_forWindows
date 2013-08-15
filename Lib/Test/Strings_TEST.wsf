@@ -1,0 +1,76 @@
+﻿<job>
+<script language="JavaScript" src="../winJSUnitTest.js"></script>
+<script language="JavaScript" src="../ADOStream.js"></script>
+<script language="JavaScript" src="../Strings.js"></script>
+<script language="JavaScript" src="../MessageWindow.js"></script>
+<script language="JavaScript">
+
+
+/* Unit Test for "Strings.js" */
+var myUnitName = "Strings.js";
+
+var check = new winJSUnitTest("Strings Unit Test"); //Unit Test Object
+
+// -- object method test --
+var result;
+
+//
+// check reSTconverter.rstFileConvert
+//
+with({result : null}) {
+
+// test file strings
+var inputText = "\n\
+=================\n\
+this is test code\n\
+=================\n\
+\n\
+this is test code for reSTconverter.js\n\
+これは試験ファイルです\n\
+:smblink:`_localdir_\\hoge.txt`\n\
+\n\
+Test Title\n\
+==========\n\
+\n\
+test section\n\
+\n\
+試験タイトル\n\
+============\n\
+\n\
+試験セクション\n\
+\n"
+
+/*
+  // File System Object
+  var objFileSys = new ActiveXObject("Scripting.FileSystemObject");
+  var objWScript = new ActiveXObject("WScript.Shell");
+
+  // create test file at current directory
+  ADOStream_Save(objFileSys.BuildPath(objWScript.CurrentDirectory,"Test_inputFile.txt"), inputText, 'shift_jis');
+*/
+
+  try {
+
+    // show output files
+    //check.showMsg(ADOStream_Load(inputTextFile,'shift_jis'));
+
+    // check result
+    var result = Strings_parseLine(inputText , "LF");
+    check.showMsg(result.length,0);
+
+    check.assert("Strings.js Test", result , "result is " + result );
+  } catch (result) {
+    check.assert("rstFileConvert", !result , "result is " + result );
+  }
+
+    // clean File System Object
+    objWScript = null;
+    objFileSys = null;
+}
+
+check.done();
+
+check.showMsg("Check is done.\nPlease delete file Test_* on current directory.");
+
+</script>
+</job>

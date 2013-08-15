@@ -152,7 +152,23 @@ function reSTconverter(srcDirPath) {
     var inputFileHerfText;
     inputFileHerfText = Strings_replace(new String(inputFileItem) , " " , "%20" , "g");
     inputFileHerfText = Strings_replace(inputFileHerfText , "\\" , "/" , "g");
-    inputFileHerfText = Strings_replace(inputFileHerfText , File_indexFileName , "" , "g");
+    var reg_deleteFileName = /(^.*\/).*$/;
+    inputFileHerfText = reg_deleteFileName.exec(inputFileHerfText)[1];
+
+
+    // replace :smblink:`_currentDir_`
+    var reg_currentDir = /(:smblink:`).\/(.*)/g;
+    inputText = inputText.replace( reg_currentDir , "$1" + inputFileHerfText + "$2" );
+
+    /*
+    var inputTextArray = Strings_parseLine(inputText,"LF");
+    for ( var line in inputTextArray ) {
+      //MessageWindow_warn("Debug",inputTextArray[line],1);
+      inputTextArray[line] = Strings_replace( inputTextArray[line] , "_currentDir_" , inputFileHerfText , "g" );
+    }
+
+    MessageWindow_warn("Debug",inputText,0);
+    */
 
     var outputFilePath = objFileSys.BuildPath(outputDirPath,outputFileName);
     ADOStream_Save(outputFilePath, inputText + "\n\n`Contents Folder <file:" + inputFileHerfText +">`_ \n" , 'utf-8');
