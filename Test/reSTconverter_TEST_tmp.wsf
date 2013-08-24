@@ -171,6 +171,7 @@ Test Title\n\
 \n\
 :smblink:`nu/fuga.txt`\n\
 :smblink:`D:\\AutoBuildSphinxIndexScript\\Lib\\Test_inputFile.txt`\n\
+:smblink:`test <hoge.txt>`\n\
 test section\n\
 \n\
 試験タイトル\n\

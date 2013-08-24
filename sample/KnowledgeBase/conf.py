@@ -247,3 +247,4 @@ texinfo_documents = [
 html_theme = 'sphinxdoc'
 html_search_language = 'ja'
 html_search_options = {'type':'mecab'}
+extensions += [ 'sphinxcontrib.smblink' ]
