@@ -157,50 +157,55 @@ function reSTconverter(srcDirPath) {
 
 
     //
-    // check and replace :smblink:`` role
+    // check and replace :smblink: role
+    //   this method will check file/folder name exeist and replace to
+    //   full name path
     //
     
     // get current path ( windows style )
     var currentPath = new String( inputFileItem );
     var reg_deleteFileName2 = /(^.*\\).*$/;
     currentPath = reg_deleteFileName2.exec(currentPath)[1];
+    reg_deleteFileName2 = null;
 
     var reg_currentDir = /:smblink:`(.+)`/g;
     var context;
+
+    // -- smblink role replace method loop --
     while ( (context = reg_currentDir.exec(inputText) )!= null ) {
 
-      //var reg_angleBracket = /.*<(.*)>/;
-      var reg_angleBracket = /(.*<)(.*)(>.*)/;
+      var reg_angleBracket = /(.*<\s*)(.*)(\s*>.*)/;
       var FilePath = new String();
-      if ( (reg_angleBracket.exec(context[1])) == null ) {
+      var angleBracketResult = reg_angleBracket.exec(context[1]);
+      if ( angleBracketResult == null || angleBracketResult.length <= 2 ) {
         FilePath = context[1];
       } else {
-        FilePath = reg_angleBracket.exec(context[1])[2];
+        FilePath = angleBracketResult[2];
 
         //Debug
-        //MessageWindow_warn("Debug","FilePath is " + FilePath 
+        // MessageWindow_warn("Debug","FilePath is " + FilePath 
         //                    + "\n reg result is " + reg_angleBracket.exec(context[1]) 
         //                    + "\n reg result index is " + reg_angleBracket.exec(context[1]).lastIndex 
         //                    ,0 );
       }
 
       //Debug
-      //MessageWindow_warn("Debug","Matched \n" + context[0] + 
+      // MessageWindow_warn("Debug","Matched \n" + context[0] + 
       //                           "\n at position " + context.index+
       //                           "\n \is \n" + context +
       //                           "\n FilePath is " + FilePath,0);
-      //MessageWindow_warn("Debug","currentPath is " + currentPath ,0 );
+      // MessageWindow_warn("Debug","currentPath is " + currentPath ,0 );
 
      
       // try File Access 1st
       
       //Debug
-      //MessageWindow_warn("Debug","1st Try " + FilePath ,0 );
+      // MessageWindow_warn("Debug","1st Try " + FilePath ,0 );
 
       if ( objFileSys.FileExists( String(FilePath) ) || objFileSys.FolderExists( String(FilePath) ) ) {
 
         //Debug
-        //MessageWindow_warn("Debug : 1st Try Success","Get file " + FilePath + 
+        // MessageWindow_warn("Debug : 1st Try Success","Get file " + FilePath + 
         //                            " check next .. " ,0);
 
       } else {
@@ -209,17 +214,17 @@ function reSTconverter(srcDirPath) {
         var reg_pattern = /^(.*\/)?(.+)$/;
 
         //Debug
-        //MessageWindow_warn("Debug : 1st Try fault","File Path " + FilePath + "\n Replace to " 
+        // MessageWindow_warn("Debug : 1st Try fault","File Path " + FilePath + "\n Replace to " 
         //                    + FilePath.replace( reg_pattern , currentPath + "$2" ) ,0);
 
         // replace file path string
         FilePath = FilePath.replace( reg_pattern , currentPath + "$2" );
 
-        // try File Access 2nd
         
         //Debug
         //MessageWindow_warn("Debug","2nd Try " + FilePath ,0 );
 
+        // try File Access 2nd
         if ( objFileSys.FileExists( String(FilePath) ) || objFileSys.FolderExists( String(FilePath) ) ) {
 
           // Debug
@@ -233,8 +238,8 @@ function reSTconverter(srcDirPath) {
           if ( (reg_angleBracket.exec(context[1])) == null ) {
             inputText = left + ":smblink:`" + FilePath + "`" + right;
           } else {
-            inputText = left + ":smblink:`" + reg_angleBracket.exec(context[1])[1] 
-                        + FilePath + reg_angleBracket.exec(context[1])[3] + "`" + right;
+            inputText = left + ":smblink:`" + angleBracketResult[1] 
+                        + FilePath + angleBracketResult[3] + "`" + right;
           }
 
         } else {

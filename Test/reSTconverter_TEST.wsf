@@ -155,7 +155,6 @@ this is test code\n\
 \n\
 this is test code for reSTconverter.js\n\
 これは試験ファイルです\n\
-:smblink:`_localdir_\\hoge.txt`\n\
 \n\
 Test Title\n\
 ==========\n\
@@ -195,6 +194,85 @@ test section\n\
     objWScript = null;
     objFileSys = null;
 }
+
+
+//
+// check reSTconverter.rstFileConvert
+//  smblink replace function
+//
+with({result : null}) {
+
+// test file strings
+var inputText = "\n\
+=================\n\
+this is test code\n\
+=================\n\
+\n\
+this is test code for reSTconverter.js\n\
+これは試験ファイルです\n\
+\n\
+\n\
+smblink test\n\
+================\n\
+\n\
+:smblink:`hoge.txt`\n\
+:smblink:`nu\\hoge.txt`\n\
+:smblink:`nu/hoge.txt`\n\
+:smblink:`test1 <fuga.txt>`\n\
+:smblink:`test2 <nu\\fuga.txt>`\n\
+:smblink:`test1 < fuga.txt >`\n\
+:smblink:`test2 < nu\\fuga.txt >`\n\
+\n\
+\n"
+
+  // File System Object
+  var objFileSys = new ActiveXObject("Scripting.FileSystemObject");
+  var objWScript = new ActiveXObject("WScript.Shell");
+
+  // create test folder and file at current directory
+  try {
+    objFileSys.CreateFolder( objFileSys.BuildPath(objWScript.CurrentDirectory,"\\test") );
+    objFileSys.CreateFolder( objFileSys.BuildPath(objWScript.CurrentDirectory,"\\test\\fuga.txt") );
+    ADOStream_Save(objFileSys.BuildPath(objWScript.CurrentDirectory,"test\\hoge.txt")
+                  , "This is TEST FILE", 'shift_jis');
+  } catch (result) {
+    check.showMsg("Folder Create Error\n\t" + result.description );
+  }
+
+  // create test file at test directory
+  ADOStream_Save(objFileSys.BuildPath(objWScript.CurrentDirectory,"test\\Test_inputFile.txt")
+                  , inputText, 'shift_jis');
+
+  try {
+
+    // create test file by rstFileConvert Method
+    var inputTextFile = objFileSys.GetFile( 
+                          objFileSys.BuildPath(
+                            objWScript.CurrentDirectory,"test\\Test_inputFile.txt"));
+    result = objRest.rstFileConvert(inputTextFile, 
+                                    objWScript.CurrentDirectory, 
+                                    "test\\Test_outputFile.txt");
+
+    // show output files
+    check.showMsg(ADOStream_Load(inputTextFile,'shift_jis'));
+    check.showMsg(ADOStream_Load(result,'utf-8'));
+
+    // check BROKEN_LINK count
+    var BROKEN_LINK_count = ADOStream_Load(result,'utf-8').match(/BROKEN_LINK/g).length;
+    //check.showMsg( "BROKEN_LINK Count is " + BROKEN_LINK_count );
+
+    // check result
+    check.assert("rstFileConvert smblink role", result , "result is " + result.description );
+    check.assert("rstFileConvert smblink role BROKEN_LINK count", (BROKEN_LINK_count == 3)?1:0 , "result is " + "BROKEN_LINK Count is " + BROKEN_LINK_count + " it shuld be 3" );
+  } catch (result) {
+    check.assert("rstFileConvert smblink role", !result , "result is " + result.description );
+  }
+
+    // clean File System Object
+    objWScript = null;
+    objFileSys = null;
+}
+
 
 check.done();
 

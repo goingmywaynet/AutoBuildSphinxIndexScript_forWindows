@@ -153,6 +153,7 @@ with({result : null}) {
 
 //
 // check reSTconverter.rstFileConvert
+//  smblink replace function
 //
 with({result : null}) {
 
@@ -172,27 +173,23 @@ smblink test\n\
 :smblink:`hoge.txt`\n\
 :smblink:`nu\\hoge.txt`\n\
 :smblink:`nu/hoge.txt`\n\
-:smblink:`\\\\vmware-host\\shared folders\\vmwareshared\\AutoBuildSphinxIndexScript\\Test\\test\\Test_inputFile.txt`\n\
 :smblink:`test1 <fuga.txt>`\n\
 :smblink:`test2 <nu\\fuga.txt>`\n\
-:smblink:`test4 <\\\\vmware-host\\shared folders\\vmwareshared\\AutoBuildSphinxIndexScript\\Test\\Test_inputFile.txt>`\n\
 :smblink:`test1 < fuga.txt >`\n\
 :smblink:`test2 < nu\\fuga.txt >`\n\
-:smblink:`test4 <  \\\\vmware-host\\shared folder\\vmwareshared\\AutoBuildSphinxIndexScript\\Test\\Test_inputFile.txt>`\n\
 \n\
-試験タイトル\n\
-============\n\
-\n\
-試験セクション\n\
 \n"
 
   // File System Object
   var objFileSys = new ActiveXObject("Scripting.FileSystemObject");
   var objWScript = new ActiveXObject("WScript.Shell");
 
-  // create test folder at current directory
+  // create test folder and file at current directory
   try {
     objFileSys.CreateFolder( objFileSys.BuildPath(objWScript.CurrentDirectory,"\\test") );
+    objFileSys.CreateFolder( objFileSys.BuildPath(objWScript.CurrentDirectory,"\\test\\fuga.txt") );
+    ADOStream_Save(objFileSys.BuildPath(objWScript.CurrentDirectory,"test\\hoge.txt")
+                  , "This is TEST FILE", 'shift_jis');
   } catch (result) {
     check.showMsg("Folder Create Error\n\t" + result.description );
   }
@@ -215,10 +212,15 @@ smblink test\n\
     check.showMsg(ADOStream_Load(inputTextFile,'shift_jis'));
     check.showMsg(ADOStream_Load(result,'utf-8'));
 
+    // check BROKEN_LINK count
+    var BROKEN_LINK_count = ADOStream_Load(result,'utf-8').match(/BROKEN_LINK/g).length;
+    //check.showMsg( "BROKEN_LINK Count is " + BROKEN_LINK_count );
+
     // check result
-    check.assert("rstFileConvert", result , "result is " + result.description );
+    check.assert("rstFileConvert smblink role", result , "result is " + result.description );
+    check.assert("rstFileConvert smblink role BROKEN_LINK count", (BROKEN_LINK_count == 3)?1:0 , "result is " + "BROKEN_LINK Count is " + BROKEN_LINK_count + " it shuld be 3" );
   } catch (result) {
-    check.assert("rstFileConvert", !result , "result is " + result.description );
+    check.assert("rstFileConvert smblink role", !result , "result is " + result.description );
   }
 
     // clean File System Object
