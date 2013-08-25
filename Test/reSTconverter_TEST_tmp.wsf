@@ -164,15 +164,21 @@ this is test code\n\
 \n\
 this is test code for reSTconverter.js\n\
 これは試験ファイルです\n\
+\n\
+\n\
+smblink test\n\
+================\n\
+\n\
 :smblink:`hoge.txt`\n\
-\n\
-Test Title\n\
-==========\n\
-\n\
-:smblink:`nu/fuga.txt`\n\
-:smblink:`D:\\AutoBuildSphinxIndexScript\\Lib\\Test_inputFile.txt`\n\
-:smblink:`test <hoge.txt>`\n\
-test section\n\
+:smblink:`nu\\hoge.txt`\n\
+:smblink:`nu/hoge.txt`\n\
+:smblink:`\\\\vmware-host\\shared folders\\vmwareshared\\AutoBuildSphinxIndexScript\\Test\\test\\Test_inputFile.txt`\n\
+:smblink:`test1 <fuga.txt>`\n\
+:smblink:`test2 <nu\\fuga.txt>`\n\
+:smblink:`test4 <\\\\vmware-host\\shared folders\\vmwareshared\\AutoBuildSphinxIndexScript\\Test\\Test_inputFile.txt>`\n\
+:smblink:`test1 < fuga.txt >`\n\
+:smblink:`test2 < nu\\fuga.txt >`\n\
+:smblink:`test4 <  \\\\vmware-host\\shared folder\\vmwareshared\\AutoBuildSphinxIndexScript\\Test\\Test_inputFile.txt>`\n\
 \n\
 試験タイトル\n\
 ============\n\
@@ -184,23 +190,35 @@ test section\n\
   var objFileSys = new ActiveXObject("Scripting.FileSystemObject");
   var objWScript = new ActiveXObject("WScript.Shell");
 
-  // create test file at current directory
-  ADOStream_Save(objFileSys.BuildPath(objWScript.CurrentDirectory,"Test_inputFile.txt"), inputText, 'shift_jis');
+  // create test folder at current directory
+  try {
+    objFileSys.CreateFolder( objFileSys.BuildPath(objWScript.CurrentDirectory,"\\test") );
+  } catch (result) {
+    check.showMsg("Folder Create Error\n\t" + result.description );
+  }
+
+  // create test file at test directory
+  ADOStream_Save(objFileSys.BuildPath(objWScript.CurrentDirectory,"test\\Test_inputFile.txt")
+                  , inputText, 'shift_jis');
 
   try {
 
     // create test file by rstFileConvert Method
-    var inputTextFile = objFileSys.GetFile( objFileSys.BuildPath(objWScript.CurrentDirectory,"Test_inputFile.txt"));
-    result = objRest.rstFileConvert(inputTextFile, objWScript.CurrentDirectory, "Test_outputFile.txt");
+    var inputTextFile = objFileSys.GetFile( 
+                          objFileSys.BuildPath(
+                            objWScript.CurrentDirectory,"test\\Test_inputFile.txt"));
+    result = objRest.rstFileConvert(inputTextFile, 
+                                    objWScript.CurrentDirectory, 
+                                    "test\\Test_outputFile.txt");
 
     // show output files
     check.showMsg(ADOStream_Load(inputTextFile,'shift_jis'));
     check.showMsg(ADOStream_Load(result,'utf-8'));
 
     // check result
-    check.assert("rstFileConvert", result , "result is " + result );
+    check.assert("rstFileConvert", result , "result is " + result.description );
   } catch (result) {
-    check.assert("rstFileConvert", !result , "result is " + result );
+    check.assert("rstFileConvert", !result , "result is " + result.description );
   }
 
     // clean File System Object

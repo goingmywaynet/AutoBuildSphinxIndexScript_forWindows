@@ -169,12 +169,19 @@ function reSTconverter(srcDirPath) {
     var context;
     while ( (context = reg_currentDir.exec(inputText) )!= null ) {
 
-      var reg_angleBracket = /<(.*)>/;
+      //var reg_angleBracket = /.*<(.*)>/;
+      var reg_angleBracket = /(.*<)(.*)(>.*)/;
       var FilePath = new String();
       if ( (reg_angleBracket.exec(context[1])) == null ) {
         FilePath = context[1];
       } else {
-        FilePath = reg_angleBracket.exec(context[1])[1];
+        FilePath = reg_angleBracket.exec(context[1])[2];
+
+        //Debug
+        //MessageWindow_warn("Debug","FilePath is " + FilePath 
+        //                    + "\n reg result is " + reg_angleBracket.exec(context[1]) 
+        //                    + "\n reg result index is " + reg_angleBracket.exec(context[1]).lastIndex 
+        //                    ,0 );
       }
 
       //Debug
@@ -186,14 +193,17 @@ function reSTconverter(srcDirPath) {
 
      
       // try File Access 1st
-      try {
-        objFile = objFileSys.GetFile( String(FilePath) );
+      
+      //Debug
+      //MessageWindow_warn("Debug","1st Try " + FilePath ,0 );
+
+      if ( objFileSys.FileExists( String(FilePath) ) || objFileSys.FolderExists( String(FilePath) ) ) {
 
         //Debug
         //MessageWindow_warn("Debug : 1st Try Success","Get file " + FilePath + 
-        //                           " size is " + objFile.Size + " check next .. " ,0);
+        //                            " check next .. " ,0);
 
-      } catch (result) {
+      } else {
 
         // replace file path string regex
         var reg_pattern = /^(.*\/)?(.+)$/;
@@ -205,22 +215,29 @@ function reSTconverter(srcDirPath) {
         // replace file path string
         FilePath = FilePath.replace( reg_pattern , currentPath + "$2" );
 
-
         // try File Access 2nd
-        try {
-          objFile = objFileSys.GetFile( String(FilePath) );
+        
+        //Debug
+        //MessageWindow_warn("Debug","2nd Try " + FilePath ,0 );
+
+        if ( objFileSys.FileExists( String(FilePath) ) || objFileSys.FolderExists( String(FilePath) ) ) {
 
           // Debug
           //MessageWindow_warn("Debug : 2nd Try success","2nd try Get file " + FilePath +
-          //                         " size is " + objFile.Size + " check next .. " ,0);
+          //                          " check next .. " ,0);
 
           // replace :smblink: role strings
           var left  = inputText.slice( 0 , context.index );
           var right = inputText.slice( context.index + context[0].length );
-          inputText = left + ":smblink:`" + FilePath + "`" + right;
 
+          if ( (reg_angleBracket.exec(context[1])) == null ) {
+            inputText = left + ":smblink:`" + FilePath + "`" + right;
+          } else {
+            inputText = left + ":smblink:`" + reg_angleBracket.exec(context[1])[1] 
+                        + FilePath + reg_angleBracket.exec(context[1])[3] + "`" + right;
+          }
 
-        } catch (result) {
+        } else {
 
           // Debug
           //MessageWindow_warn("Debug : 2nd Try Fault","2nd Can not get file " + 
