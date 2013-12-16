@@ -1,0 +1,236 @@
+﻿<job>
+<script language="JavaScript" src="../Lib/reSTconverter.js"></script>
+<script language="JavaScript" src="../Lib/winJSUnitTest.js"></script>
+<script language="JavaScript" src="../Lib/ADOStream.js"></script>
+<script language="JavaScript" src="../Lib/Strings.js"></script>
+<script language="JavaScript" src="../Lib/MessageWindow.js"></script>
+<script language="JavaScript" src="../config.js"></script>
+<script language="JavaScript">
+
+
+/* Unit Test for "reSTconverter.js" */
+var myUnitName = "reSTconverter.js";
+
+var check = new winJSUnitTest("reSTconvertet Unit Test"); //Unit Test Object
+
+
+// -- object method test --
+var objRest = new reSTconverter();
+var result;
+
+
+//
+// check reSTconverter.indexFileName
+//
+/*
+with({result : null}) {
+  check.assert("Default indexFileName is index.rst",objRest.indexFileName == "index.rst","index file name is not index.rst");
+
+  objRest.setIndexFileName("hoge.rst");
+  check.assert("Update indexFileName", objRest.indexFileName == "hoge.rst" , "file name not hoge.rst" );
+
+  objRest.setIndexFileName("");
+  check.assert("clear indexFileName by \"\"", objRest.indexFileName == "index.rst" , "index file name is not index.rst");
+
+  objRest.setIndexFileName(null);
+  check.assert("clear indexFileName by null", objRest.indexFileName == "index.rst" , "index file name is not index.rst");
+}
+*/
+
+//
+// check reSTconverter.srcDirPath
+//
+/*
+with({result : null}) {
+  check.assert("Default srcDirPath is undefined", objRest.srcDirPath == null , "srcDirPath is not null");
+
+  objRest.setSrcDirPath("D:\\hogefugehogefuge");
+  check.assert("srcDirPath set error1", objRest.srcDirPath == null , "srcDirPath is " + objRest.srcDirPath);
+  check.showMsg("NOTE.\n \"[object Error] .. D:\\hogefugehogefuge error\" is good test result.\n don't worry :)");
+
+  objRest.setSrcDirPath("Temp");
+  check.assert("srcDirPath set error2", objRest.srcDirPath == null , "srcDirPath is " + objRest.srcDirPath);
+  check.showMsg("NOTE.\n \"[object Error] .. Temp error\" is good test result.\n don't worry :)");
+
+  objRest.setSrcDirPath("D:Temp");
+  check.assert("srcDirPath set error3", objRest.srcDirPath == null , "srcDirPath is " + objRest.srcDirPath);
+  check.showMsg("NOTE.\n \"[object Error] .. D:Temp error\" is good test result.\n don't worry :)");
+
+  var objWScript = new ActiveXObject("WScript.Shell");
+  objRest.setSrcDirPath(objWScript.CurrentDirectory);
+  check.assert("set srcDirPath to current directory", objRest.srcDirPath == objWScript.CurrentDirectory , "srcDirPath is " + objRest.srcDirPath);
+  objWScript = null;
+}
+*/
+
+//
+// check reSTconverter.pushTocTitleList
+//
+/*
+with({result : null}){
+  
+  objRest.pushTocTitleList("title1");
+  objRest.pushTocTitleList("title2");
+  objRest.pushTocTitleList("title3");
+  objRest.pushTocTitleList("title4");
+  check.assert("push tocTitleList \"title1\" - \"title4\"", objRest.tocTitleList[0] == "title1" , "tocTitleList[0] is " + objRest.tocTitleList[0]);
+  check.assert("count tocTitleList", objRest.tocTitleList.length == 4 , "tocTitleList.length is " + objRest.tocTitleList.length);
+
+  //check.showMsg(objRest.tocTitleList.join("\n"));
+}
+*/
+
+//
+// check reSTconverter.pushTocItemList
+//
+/*
+with({result : null}){
+  
+  objRest.pushTocItemList("1","Item1");
+  objRest.pushTocItemList("2","Item2");
+  objRest.pushTocItemList("3","Item3");
+  objRest.pushTocItemList("4","Item4");
+  result = objRest.tocItemList[0].join(",") + "\n" + objRest.tocItemList[1].join(",");
+  check.assert("push tocItemList \"Item1\" - \"Item4\"", objRest.tocItemList[1][0] == "Item1" , "result is " + result);
+  check.assert("count tocItemList", objRest.tocItemList[0].length == 4 && objRest.tocItemList[1].length == 4, "tocItemList.length is " + objRest.tocItemList.length);
+
+  objRest.pushTocItemList("5","");
+  objRest.pushTocItemList("string","");
+  objRest.pushTocItemList("string","Item");
+  objRest.pushTocItemList("","Item5");
+  result = objRest.tocItemList[0].join(",") + "\n" + objRest.tocItemList[1].join(",");
+  check.assert("count tocItemList after error input", objRest.tocItemList[0].length == 4 && objRest.tocItemList[1].length == 4, "result is " + result);
+
+  objRest.pushTocItemList("1","Item1b");
+  objRest.pushTocItemList("2","Item2b");
+  objRest.pushTocItemList("3","Item3b");
+  objRest.pushTocItemList("4","Item4b");
+  result = objRest.tocItemList[0].join(",") + "\n" + objRest.tocItemList[1].join(",");
+  check.assert("push tocItemList \"Item1a\" - \"Item4b\"", objRest.tocItemList[1][4] == "Item1b" , "result is " + result);
+  check.assert("count tocItemList", objRest.tocItemList[0].length == 8 && objRest.tocItemList[1].length == 8, "tocItemList.length is " + objRest.tocItemList.length);
+
+  //check.showMsg( objRest.tocItemList[0].join(",") + "\n" + objRest.tocItemList[1].join(",") );
+  //check.showMsg(objRest.tocTitleList.join("\n"));
+}
+*/
+
+//
+// check reSTconverter.newIndexFile
+//
+/*
+with({result : null}) {
+
+  objRest.clearSrcDirPath();
+  result = objRest.newIndexFile("hoge",true);
+  check.assert("create indexFile error", result == null , "newIndexFile result is " + result );
+  check.showMsg("NOTE.\n \"[object Error] .. fail to open srcDirPath\" is good test result.\n don't worry :)");
+
+  
+  var objWScript = new ActiveXObject("WScript.Shell");
+  objRest.setSrcDirPath(objWScript.CurrentDirectory);
+  objWScript = null;
+
+  // pattern 1
+  result = objRest.newIndexFile("",false); // create index.rst
+  check.assert("create indexFile", result == (objRest.srcDirPath + "\\" + objRest.indexFileName) , "newIndexFile result is " + result );
+  var indexFile = ADOStream_Load(result,'utf-8');
+  //check.showMsg(indexFile);
+
+  // pattern 2
+  result = objRest.newIndexFile("Long Title and Date tag Test",true); // create index.rst
+  check.assert("create indexFile", result == (objRest.srcDirPath + "\\" + objRest.indexFileName) , "newIndexFile result is " + result );
+  var indexFile = ADOStream_Load(result,'utf-8');
+  //check.showMsg(indexFile);
+
+  // pattern 3
+  result = objRest.newIndexFile("日本語タイトルの試験",true); // create index.rst
+  check.assert("create indexFile", result == (objRest.srcDirPath + "\\" + objRest.indexFileName) , "newIndexFile result is " + result );
+  var indexFile = ADOStream_Load(result,'utf-8');
+  check.showMsg(indexFile);
+}
+*/
+
+
+//
+// check reSTconverter.rstFileConvert
+//  smblink replace function
+//
+with({result : null}) {
+
+// test file strings
+var inputText = "\n\
+=================\n\
+this is test code\n\
+=================\n\
+\n\
+this is test code for reSTconverter.js\n\
+これは試験ファイルです\n\
+\n\
+\n\
+smblink test\n\
+================\n\
+\n\
+:smblink:`hoge.txt`\n\
+:smblink:`nu\\hoge.txt`\n\
+:smblink:`nu/hoge.txt`\n\
+:smblink:`test1 <fuga.txt>`\n\
+:smblink:`test2 <nu\\fuga.txt>`\n\
+:smblink:`test1 < fuga.txt >`\n\
+:smblink:`test2 < nu\\fuga.txt >`\n\
+\n\
+\n"
+
+  // File System Object
+  var objFileSys = new ActiveXObject("Scripting.FileSystemObject");
+  var objWScript = new ActiveXObject("WScript.Shell");
+
+  // create test folder and file at current directory
+  try {
+    objFileSys.CreateFolder( objFileSys.BuildPath(objWScript.CurrentDirectory,"\\test") );
+    objFileSys.CreateFolder( objFileSys.BuildPath(objWScript.CurrentDirectory,"\\test\\fuga.txt") );
+    ADOStream_Save(objFileSys.BuildPath(objWScript.CurrentDirectory,"test\\hoge.txt")
+                  , "This is TEST FILE", 'shift_jis');
+  } catch (result) {
+    check.showMsg("Folder Create Error\n\t" + result.description );
+  }
+
+  // create test file at test directory
+  ADOStream_Save(objFileSys.BuildPath(objWScript.CurrentDirectory,"test\\Test_inputFile.txt")
+                  , inputText, 'shift_jis');
+
+  try {
+
+    // create test file by rstFileConvert Method
+    var inputTextFile = objFileSys.GetFile( 
+                          objFileSys.BuildPath(
+                            objWScript.CurrentDirectory,"test\\Test_inputFile.txt"));
+    result = objRest.rstFileConvert(inputTextFile, 
+                                    objWScript.CurrentDirectory, 
+                                    "test\\Test_outputFile.txt");
+
+    // show output files
+    check.showMsg(ADOStream_Load(inputTextFile,'shift_jis'));
+    check.showMsg(ADOStream_Load(result,'utf-8'));
+
+    // check BROKEN_LINK count
+    var BROKEN_LINK_count = ADOStream_Load(result,'utf-8').match(/BROKEN_LINK/g).length;
+    //check.showMsg( "BROKEN_LINK Count is " + BROKEN_LINK_count );
+
+    // check result
+    check.assert("rstFileConvert smblink role", result , "result is " + result.description );
+    check.assert("rstFileConvert smblink role BROKEN_LINK count", (BROKEN_LINK_count == 3)?1:0 , "result is " + "BROKEN_LINK Count is " + BROKEN_LINK_count + " it shuld be 3" );
+  } catch (result) {
+    check.assert("rstFileConvert smblink role", !result , "result is " + result.description );
+  }
+
+    // clean File System Object
+    objWScript = null;
+    objFileSys = null;
+}
+
+check.done();
+
+check.showMsg("Check is done.\nPlease delete file index.rst , Test_* on current directory.");
+
+</script>
+</job>

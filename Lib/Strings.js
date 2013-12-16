@@ -18,6 +18,12 @@
 * - 引数 _lineCode : 改行コード ( CR , LF , CRLF )
 * - 返り値 : csv配列
 *
+* Strings_parseLine(_str, _lineCode)
+* - 文字列を改行で分解して配列にして返す
+* - 引数 str : 文字列
+* - 引数 _lineCode : 改行コード ( CR , LF , CRLF )
+* - 返り値 : 配列
+*
 */
 
 
@@ -77,4 +83,21 @@ function Strings_parseCSV(_str, _lineCode) {
     if( cells.length != 1 ) csvData.push(cells);
   }
   return csvData;
+}
+
+function Strings_parseLine(_str, _lineCode) {
+
+  var CR = String.fromCharCode(13);
+  var LF = String.fromCharCode(10);
+  //ここはCSVの改行コードによってCR,LFを使い分ける必要がある。
+
+  if ( _lineCode == "CR" ) {
+    var lines = _str.split(CR);
+  } else if ( _lineCode == "LF" ) {
+    var lines = _str.split(LF);
+  } else if ( _lineCode == "CRLF" ) {
+    var lines = _str.split(CR+LF);
+  }
+
+  return lines;
 }
