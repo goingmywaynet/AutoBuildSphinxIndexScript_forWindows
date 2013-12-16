@@ -1,4 +1,4 @@
-﻿/* reSTconverter.js
+/* reSTconverter.js
  * Version 0.1
  * Author : Joey Chen
  * Date   : 2012/09/17
@@ -249,9 +249,9 @@ function reSTconverter(srcDirPath) {
           //                            FilePath + " result is " + result.description ,0);
 
           // replace :smblink: role strings
-          var left  = inputText.slice( 0 , context.index );
-          var right = inputText.slice( context.index + context[0].length );
-          inputText = left + context[0] + " **<-BROKEN_LINK** " + right;
+          //var left  = inputText.slice( 0 , context.index );
+          //var right = inputText.slice( context.index + context[0].length );
+          //inputText = left + context[0] + " **<-BROKEN_LINK** " + right;
 
         }
       }
