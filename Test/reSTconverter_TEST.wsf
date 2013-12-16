@@ -258,12 +258,12 @@ smblink test\n\
     check.showMsg(ADOStream_Load(result,'utf-8'));
 
     // check BROKEN_LINK count
-    var BROKEN_LINK_count = ADOStream_Load(result,'utf-8').match(/BROKEN_LINK/g).length;
+    //var BROKEN_LINK_count = ADOStream_Load(result,'utf-8').match(/BROKEN_LINK/g).length;
     //check.showMsg( "BROKEN_LINK Count is " + BROKEN_LINK_count );
 
     // check result
     check.assert("rstFileConvert smblink role", result , "result is " + result.description );
-    check.assert("rstFileConvert smblink role BROKEN_LINK count", (BROKEN_LINK_count == 3)?1:0 , "result is " + "BROKEN_LINK Count is " + BROKEN_LINK_count + " it shuld be 3" );
+    //check.assert("rstFileConvert smblink role BROKEN_LINK count", (BROKEN_LINK_count == 3)?1:0 , "result is " + "BROKEN_LINK Count is " + BROKEN_LINK_count + " it shuld be 3" );
   } catch (result) {
     check.assert("rstFileConvert smblink role", !result , "result is " + result.description );
   }

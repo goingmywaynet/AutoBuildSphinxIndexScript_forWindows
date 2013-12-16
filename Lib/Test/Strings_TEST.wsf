@@ -19,49 +19,41 @@ var result;
 //
 with({result : null}) {
 
-// test file strings
-var inputText = "\n\
-=================\n\
-this is test code\n\
-=================\n\
-\n\
-this is test code for reSTconverter.js\n\
-これは試験ファイルです\n\
-:smblink:`_localdir_\\hoge.txt`\n\
-\n\
-Test Title\n\
-==========\n\
-\n\
-test section\n\
-\n\
-試験タイトル\n\
-============\n\
-\n\
-試験セクション\n\
-\n"
-
-/*
-  // File System Object
-  var objFileSys = new ActiveXObject("Scripting.FileSystemObject");
-  var objWScript = new ActiveXObject("WScript.Shell");
-
-  // create test file at current directory
-  ADOStream_Save(objFileSys.BuildPath(objWScript.CurrentDirectory,"Test_inputFile.txt"), inputText, 'shift_jis');
-*/
-
+// test strings A
+var inputText = "1\n2\n3\n4\n5";
   try {
-
-    // show output files
-    //check.showMsg(ADOStream_Load(inputTextFile,'shift_jis'));
 
     // check result
     var result = Strings_parseLine(inputText , "LF");
-    check.showMsg(result.length,0);
+    //check.showMsg(result,0);
+    //check.showMsg(result.length,0);
 
-    check.assert("Strings.js Test", result , "result is " + result );
+    check.assert("Strings.js Test Strings_parseLine 1st", result.length == 5 , "result is " + result );
   } catch (result) {
     check.assert("rstFileConvert", !result , "result is " + result );
   }
+
+// test strings B
+inputText = "\
+1\n\
+2\n\
+3\n\
+4\n\
+5\n";
+  try {
+
+    // check result
+    var result = Strings_parseLine(inputText , "LF");
+    //check.showMsg(result,0);
+    //check.showMsg(result.length,0);
+
+    check.assert("Strings.js Test Strings_parseLine 2nd", result.length == 6 , "result is " + result );
+  } catch (result) {
+    check.assert("rstFileConvert", !result , "result is " + result );
+  }
+
+
+
 
     // clean File System Object
     objWScript = null;
