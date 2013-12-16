@@ -43,15 +43,15 @@ with({result : null}) {
 
   objRest.setSrcDirPath("D:\\hogefugehogefuge");
   check.assert("srcDirPath set error1", objRest.srcDirPath == null , "srcDirPath is " + objRest.srcDirPath);
-  check.showMsg("NOTE.\n \"[object Error] .. D:\\hogefugehogefuge error\" is good test result.\n don't worry :)");
+  //check.showMsg("NOTE.\n \"[object Error] .. D:\\hogefugehogefuge error\" is good test result.\n don't worry :)");
 
   objRest.setSrcDirPath("Temp");
   check.assert("srcDirPath set error2", objRest.srcDirPath == null , "srcDirPath is " + objRest.srcDirPath);
-  check.showMsg("NOTE.\n \"[object Error] .. Temp error\" is good test result.\n don't worry :)");
+  //check.showMsg("NOTE.\n \"[object Error] .. Temp error\" is good test result.\n don't worry :)");
 
   objRest.setSrcDirPath("D:Temp");
   check.assert("srcDirPath set error3", objRest.srcDirPath == null , "srcDirPath is " + objRest.srcDirPath);
-  check.showMsg("NOTE.\n \"[object Error] .. D:Temp error\" is good test result.\n don't worry :)");
+  //check.showMsg("NOTE.\n \"[object Error] .. D:Temp error\" is good test result.\n don't worry :)");
 
   var objWScript = new ActiveXObject("WScript.Shell");
   objRest.setSrcDirPath(objWScript.CurrentDirectory);
@@ -115,7 +115,7 @@ with({result : null}) {
   objRest.clearSrcDirPath();
   result = objRest.newIndexFile("hoge",true);
   check.assert("create indexFile error", result == null , "newIndexFile result is " + result );
-  check.showMsg("NOTE.\n \"[object Error] .. fail to open srcDirPath\" is good test result.\n don't worry :)");
+  //check.showMsg("NOTE.\n \"[object Error] .. fail to open srcDirPath\" is good test result.\n don't worry :)");
 
   
   var objWScript = new ActiveXObject("WScript.Shell");
@@ -138,7 +138,7 @@ with({result : null}) {
   result = objRest.newIndexFile("日本語タイトルの試験",true); // create index.rst
   check.assert("create indexFile", result == (objRest.srcDirPath + "\\" + objRest.indexFileName) , "newIndexFile result is " + result );
   var indexFile = ADOStream_Load(result,'utf-8');
-  check.showMsg(indexFile);
+  //check.showMsg(indexFile);
 }
 
 
@@ -181,8 +181,8 @@ test section\n\
     result = objRest.rstFileConvert(inputTextFile, objWScript.CurrentDirectory, "Test_outputFile.txt");
 
     // show output files
-    check.showMsg(ADOStream_Load(inputTextFile,'shift_jis'));
-    check.showMsg(ADOStream_Load(result,'utf-8'));
+    //check.showMsg(ADOStream_Load(inputTextFile,'shift_jis'));
+    //check.showMsg(ADOStream_Load(result,'utf-8'));
 
     // check result
     check.assert("rstFileConvert", result , "result is " + result );
@@ -236,7 +236,7 @@ smblink test\n\
     ADOStream_Save(objFileSys.BuildPath(objWScript.CurrentDirectory,"test\\hoge.txt")
                   , "This is TEST FILE", 'shift_jis');
   } catch (result) {
-    check.showMsg("Folder Create Error\n\t" + result.description );
+    //check.showMsg("Folder Create Error\n\t" + result.description );
   }
 
   // create test file at test directory
@@ -257,8 +257,8 @@ smblink test\n\
                                     "test\\Test_outputFile.txt");
 
     // show output files
-    check.showMsg(ADOStream_Load(inputTextFile,'shift_jis'));
-    check.showMsg(ADOStream_Load(result,'utf-8'));
+    //check.showMsg(ADOStream_Load(inputTextFile,'shift_jis'));
+    //check.showMsg(ADOStream_Load(result,'utf-8'));
 
     // check BROKEN_LINK count
     //var BROKEN_LINK_count = ADOStream_Load(result,'utf-8').match(/BROKEN_LINK/g).length;
