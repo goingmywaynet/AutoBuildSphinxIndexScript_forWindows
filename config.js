@@ -20,17 +20,17 @@ var Dir_sphinxMakeDir = "D:\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase.s
 var Dir_sphinxWorkDirHtml = "D:\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase.sphinx\\build\\html";
     // Sphinxによってビルドされたhtmlフォルダ
 
-var Dir_indexSearchDir = "\\\\vmware-host\\Shared Folders\\VMWareShared\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase";
+var Dir_indexSearchDir = "D:\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase";
     // インデックスファイルをサーチする対象
     // このフォルダ配下に対して再帰的にファイルをサーチする
 
 var File_indexFileName = "000_IndexFile.txt";
     // 検索されるインデックスファイル名
 
-var Dir_indexHtmlDir = "\\\\vmware-host\\Shared Folders\\VMWareShared\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase.index";
+var Dir_indexHtmlDir = "D:\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase.index";
     // Sphinxによってビルドされたhtmlを配置する公開ディレクトリ場所
 
-var File_confPy = "\\\\vmware-host\\Shared Folders\\VMWareShared\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase\\conf.py";
+var File_confPy = "D:\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase\\conf.py";
     // Sphinx ビルド設定ファイル(conf.py)の保存場所
 
 var Num_FolderDepth4Titles = "1";
