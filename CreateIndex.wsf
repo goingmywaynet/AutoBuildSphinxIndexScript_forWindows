@@ -81,7 +81,7 @@ var File_confPy = File_confPy ? File_confPy : "D:\\KnowledgeBase\\conf.py";
 var Num_FolderDepth4Titles = Num_FolderDepth4Titles ? Num_FolderDepth4Titles : 1;
     // タイトルとして扱う階層の深さを指定
 
-var EnbaleSmblinkReplace = new Boolean(false);
+var EnbaleSmblinkReplace = EnbaleSmblinkReplace ? EnbaleSmblinkReplace :new Boolean(false);
     // :smblink:ロールのパス変換機能 sphinxcontrib.smblink を使う場合は true してもよい
 
 // -- ここまで環境設定は Version 0.6 より別ファイルに分離した。 --
