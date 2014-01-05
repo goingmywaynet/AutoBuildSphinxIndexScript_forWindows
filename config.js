@@ -1,4 +1,4 @@
-﻿/*
+/*
  * CreateIndex.wsf によって呼ばれる変数定義ファイル
  *
  */
@@ -35,3 +35,6 @@ var File_confPy = "D:\\AutoBuildSphinxIndexScript\\sample\\KnowledgeBase\\conf.p
 
 var Num_FolderDepth4Titles = "1";
     // タイトルとして扱うフォルダ階層 必ず1以上を設定すること
+
+var EnbaleSmblinkReplace = new Boolean(false);
+    // :smblink:ロールのパス変換機能 sphinxcontrib.smblink を使う場合は true 
