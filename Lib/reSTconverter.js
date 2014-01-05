@@ -1,12 +1,17 @@
 /* reSTconverter.js
- * Version 0.1
+ * Version 0.2
  * Author : Joey Chen
- * Date   : 2012/09/17
+ * Date   : 2014/01/05
  *
  * Description : 
  *    string configure and some markup parse object for sphinx reST
  *
  * Update Log :
+ *
+ *    Version 0.1 firest version
+ *
+ *    Version 0.2 refuctoring.
+ *                add reSTconverterTools object for trace :smblink: , image , figure role files
  *
  */
 
@@ -162,10 +167,13 @@ function reSTconverter(srcDirPath) {
       if ( !(toolObj instanceof reSTconverterTools) ) { 
         MessageWindow_warn("Error at reSTconverter", toolObj.message, 0);
       } else { // method call
-        // inputText = toolObj.smblinkReplace(inputText, inputFileItem, outputDirPath);
-        inputText = toolObj.regPathReplace(/(:smblink:`)(.+)(`)/g, inputText, inputFileItem, outputDirPath);
-        // inputText = toolObj.regPathReplace(/(\.\.\s*.*image::\s*)(.+)/g, inputText, inputFileItem, outputDirPath);
+        inputText = toolObj.regPathReplace(/(:smblink:`)(.+)(`)/g, inputText, inputFileItem, Boolean(false));
+        inputText = toolObj.regPathReplace(/(\.\.\s*.*image::\s*)(.+)(\s*\r\n)|(\.\.\s*.*image::\s*)(.+)(\s*\n)/g
+            , inputText, inputFileItem, Boolean(true));
+        inputText = toolObj.regPathReplace(/(\.\.\s*.*figure::\s*)(.+)(\s*\r\n)|(\.\.\s*.*figure::\s*)(.+)(\s*\n)/g
+            , inputText, inputFileItem, Boolean(true));
       }
+
     }
 
     var outputFilePath = objFileSys.BuildPath(outputDirPath,outputFileName);
@@ -193,62 +201,67 @@ function reSTconverterTools(reSTconverterObj) {
   // [Propertys]
   //
   this.cnvObj = reSTconverterObj; // reSTconverter Object
-  // Debug
-  // MessageWindow_warn("Debug","reSTconverterTools is run",0);
 
   //
   // [Objects]
   //
   var objFileSys = new ActiveXObject("Scripting.FileSystemObject");
 
-  //
-  // [Method] smblink role path replace
-  // check and replace :smblink: role
-  //   this method will check file/folder name exeist and replace to
-  //   full name path
-  //
-  //
-  this.smblinkReplace = function (inputText, inputFileItem, outputDirPath) {
-  //                              String   , FileSystemObject , String 
-
-    // get current path ( windows style )
+  // [Method] getCurrentPath
+  // get inputFileItem current directory path by string
+  var getCurrentPath = function (inputFileItem) { // get current directory path (windows)
     var currentPath = new String( inputFileItem );
     var reg_deleteFileName2 = /(^.*\\).*$/;
-    currentPath = reg_deleteFileName2.exec(currentPath)[1];
+    return reg_deleteFileName2.exec(currentPath)[1];
     reg_deleteFileName2 = null;
+  }
 
-    var reg_currentDir = /:smblink:`(.+)`/g;
-    var context;
+  // [Method] escapeWindowsPath
+  // get inputFileItem current directory path by string
+  var escapeWindowsPath = function (inputFileItem) { // escape directory path (windows)
+    inputFileHerfText = Strings_replace(new String(inputFileItem) , " " , "%20" , "g");
+    inputFileHerfText = Strings_replace(inputFileHerfText , "\\" , "/" , "g");
+    inputFileHerfText = "file:" + inputFileHerfText;
+    return inputFileHerfText;
+  }
 
-    // -- smblink role replace method loop --
-    while ( (context = reg_currentDir.exec(inputText) )!= null ) {
+  // [Method] path replace
+  // check and replace regexp
+  //   this method will check file/folder name exeist and replace to
+  //   full name path
+  this.regPathReplace = function (reg_context, inputText, inputFileItem, escapeFlag) {
+    //                            regexp     , String   , FileSystemObject, BOOL
+
+    var currentPath = getCurrentPath(inputFileItem);    // get current directory path
+
+    if ( !(reg_context instanceof RegExp ) ) {
+      var result = new Error("option is " + reg_context.constructor + "\nyou need give RegExp object");
+      return (result);
+    }
+
+    var context ;   // regexp result (RegExp result Array)
+    var leftcount ; // inputText split target index (Number)
+
+    // -- replace method loop --
+    while ( (context = reg_context.exec(inputText) )!= null ) {
 
       var reg_angleBracket = /(.*<\s*)(.*)(\s*>.*)/;
       var FilePath = new String();
-      var angleBracketResult = reg_angleBracket.exec(context[1]);
+      var angleBracketResult = reg_angleBracket.exec(context[2]);
       if ( angleBracketResult == null || angleBracketResult.length <= 2 ) {
-        FilePath = context[1];
+        FilePath = context[2];
+        leftcount = context.index;
       } else {
         FilePath = angleBracketResult[2];
-        //Debug
-        // MessageWindow_warn("Debug","FilePath is " + FilePath 
-        //                    + "\n reg result is " + reg_angleBracket.exec(context[1]) 
-        //                    + "\n reg result index is " + reg_angleBracket.exec(context[1]).lastIndex 
-        //                    ,0 );
+        leftcount = context.index + angleBracketResult.index;
       }
 
       //Debug
-      // MessageWindow_warn("Debug","Matched \n" + context[0] + 
-      //                           "\n at position " + context.index+
-      //                           "\n \is \n" + context +
+      // MessageWindow_warn("Debug","Matched \n" + context + 
+      //                           "\n at position " + leftcount +
       //                           "\n FilePath is " + FilePath,0);
-      // MessageWindow_warn("Debug","currentPath is " + currentPath ,0 );
-     
-      // try File Access 1st
       
-      //Debug
-      // MessageWindow_warn("Debug","1st Try " + FilePath ,0 );
-
+      // try File Access 1st
       if ( objFileSys.FileExists( String(FilePath) ) || objFileSys.FolderExists( String(FilePath) ) ) {
 
         //Debug
@@ -267,100 +280,6 @@ function reSTconverterTools(reSTconverterObj) {
         // replace file path string
         FilePath = FilePath.replace( reg_pattern , currentPath + "$2" );
 
-        //Debug
-        //MessageWindow_warn("Debug","2nd Try " + FilePath ,0 );
-
-        // try File Access 2nd
-        if ( objFileSys.FileExists( String(FilePath) ) || objFileSys.FolderExists( String(FilePath) ) ) {
-
-          // Debug
-          //MessageWindow_warn("Debug : 2nd Try success","2nd try Get file " + FilePath +
-          //                          " check next .. " ,0);
-
-          // replace :smblink: role strings
-          var left  = inputText.slice( 0 , context.index );
-          var right = inputText.slice( context.index + context[0].length );
-
-          if ( (reg_angleBracket.exec(context[1])) == null ) {
-            inputText = left + ":smblink:`" + FilePath + "`" + right;
-          } else {
-            inputText = left + ":smblink:`" + angleBracketResult[1] 
-                        + FilePath + angleBracketResult[3] + "`" + right;
-          }
-
-        } else {
-
-          // Debug
-          //MessageWindow_warn("Debug : 2nd Try Fault","2nd Can not get file " + 
-          //                            FilePath + " result is " + result.description ,0);
-
-        }
-      }
-    }
-    return inputText;
-  } // Method End
-
-  //
-  // [Method] path replace
-  // check and replace regexp
-  //   this method will check file/folder name exeist and replace to
-  //   full name path
-  //
-  //
-  this.regPathReplace = function (reg_context, inputText, inputFileItem, outputDirPath) {
-  //                              regexp     , String   , FileSystemObject , String 
-
-    // get current path ( windows style )
-    var currentPath = new String( inputFileItem );
-    var reg_deleteFileName2 = /(^.*\\).*$/;
-    currentPath = reg_deleteFileName2.exec(currentPath)[1];
-    reg_deleteFileName2 = null;
-
-    var reg_currentDir = reg_context;
-    var context , leftcount ;
-
-    // -- smblink role replace method loop --
-    while ( (context = reg_currentDir.exec(inputText) )!= null ) {
-
-      var reg_angleBracket = /(.*<\s*)(.*)(\s*>.*)/;
-      var FilePath = new String();
-      var angleBracketResult = reg_angleBracket.exec(context[2]);
-      if ( angleBracketResult == null || angleBracketResult.length <= 2 ) {
-        FilePath = context[2];
-        leftcount = context.index;
-      } else {
-        FilePath = angleBracketResult[2];
-        leftcount = context.index + angleBracketResult.index;
-      }
-
-      //Debug
-      // MessageWindow_warn("Debug","Matched \n" + context + 
-      //                           "\n at position " + leftcount +
-      //                           "\n FilePath is " + FilePath,0);
-      // MessageWindow_warn("Debug","currentPath is " + currentPath ,0 );
-     
-      // try File Access 1st
-      
-      //Debug
-      // MessageWindow_warn("Debug","1st Try " + FilePath ,0 );
-
-      if ( objFileSys.FileExists( String(FilePath) ) || objFileSys.FolderExists( String(FilePath) ) ) {
-
-        //Debug
-        // MessageWindow_warn("Debug : 1st Try Success","Get file " + FilePath + 
-        //                            " check next .. " ,0);
-
-      } else {
-
-        // replace file path string regex
-        var reg_pattern = /^(.*\/)?(.+)$/;
-
-        //Debug
-        MessageWindow_warn("Debug : 1st Try fault","File Path " + FilePath + "\n Replace to " 
-                           + FilePath.replace( reg_pattern , currentPath + "$2" ) ,0);
-
-        // replace file path string
-        FilePath = FilePath.replace( reg_pattern , currentPath + "$2" );
 
         //Debug
         // MessageWindow_warn("Debug","2nd Try " + FilePath +
@@ -373,6 +292,11 @@ function reSTconverterTools(reSTconverterObj) {
           // MessageWindow_warn("Debug : 2nd Try success","2nd try Get file " + FilePath +
           //                          " check next .. " ,0);
 
+          // escape File Path to HTML herf Style (\\File path -> //File%path)
+          if ( escapeFlag ) {
+            FilePath = escapeWindowsPath(FilePath); // escape directory path (windows)
+          }
+
           // replace :smblink: role strings
           var left  = inputText.slice( 0 , leftcount );
           var right = inputText.slice( leftcount + context[0].length );
@@ -380,30 +304,30 @@ function reSTconverterTools(reSTconverterObj) {
           var pathText;
 
           if ( (reg_angleBracket.exec(context[2])) == null ) {
-            pathText = context[1] + FilePath + context[3];
+            pathText = context[1] + FilePath;
+            if ( context[3] != null ) { pathText += context[3] }
           } else {
-            pathText = context[1] + angleBracketResult[1] 
-                        + FilePath + angleBracketResult[3] + context[3];
+            pathText = context[1] + angleBracketResult[1] + FilePath + angleBracketResult[3];
+            if ( context[3] != null ) { pathText += context[3] }
           }
+
 
           inputText = left + pathText + right;
 
           // Debug
-          MessageWindow_warn("Debug : 2nd Try success","context is " + context + 
-                                   "\nleft is \n" + left +
-                                   "\nright is \n" + right +
-                                   "\nangle is \n" + angleBracketResult +
-                                   "\nadd is \n" + pathText ,0);
+          // MessageWindow_warn("Debug : 2nd Try success","context is " + context + 
+          //                          "\nleft is \n" + left +
+          //                          "\nright is \n" + right +
+          //                          "\nangle is \n" + angleBracketResult +
+          //                          "\nadd is \n" + pathText ,0);
 
           // Debug
           // MessageWindow_warn("Debug : 2nd Try success","inputText is \n" + inputText ,0);
 
         } else {
-
           // Debug
           //MessageWindow_warn("Debug : 2nd Try Fault","2nd Can not get file " + 
           //                            FilePath + " result is " + result.description ,0);
-
         }
       }
     }

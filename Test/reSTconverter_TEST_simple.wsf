@@ -203,27 +203,31 @@ test section\n\
 with({result : null}) {
 
 // test file strings
-var inputText = "\n\
-=================\n\
-this is test code\n\
-=================\n\
-\n\
-this is test code for reSTconverter.js\n\
-これは試験ファイルです\n\
-\n\
-\n\
-smblink test\n\
-================\n\
-\n\
-:smblink:`hoge.txt`\n\
-:smblink:`nu\\hoge.txt`\n\
-:smblink:`nu/hoge.txt`\n\
-:smblink:`test1 <fuga.txt>`\n\
-:smblink:`test2 <nu\\fuga.txt>`\n\
-:smblink:`test1 < fuga.txt >`\n\
-:smblink:`test2 < nu\\fuga.txt >`\n\
-\n\
-\n"
+var inputText = "\r\n\
+=================\r\n\
+this is test code\r\n\
+=================\r\n\
+\r\n\
+this is test code for reSTconverter.js\r\n\
+これは試験ファイルです\r\n\
+.. image:: Koala.jpg\r\n\
+  :width: 50%\r\n\
+\r\n\
+.. figure:: Koala.jpg\r\n\
+  :width: 50%\r\n\
+\r\n\
+smblink test\r\n\
+================\r\n\
+\r\n\
+:smblink:`hoge.txt`\r\n\
+:smblink:`nu\\hoge.txt`\r\n\
+:smblink:`nu/hoge.txt`\r\n\
+:smblink:`test1 <fuga.txt>`\r\n\
+:smblink:`test2 <nu\\fuga.txt>`\r\n\
+:smblink:`test1 < fuga.txt >`\r\n\
+:smblink:`test2 < nu\\fuga.txt >`\r\n\
+\r\n\
+\r\n"
 
   // File System Object
   var objFileSys = new ActiveXObject("Scripting.FileSystemObject");
@@ -270,8 +274,7 @@ smblink test\n\
 
     // check result
     check.assert("rstFileConvert smblink role", result , "result is " + result.description );
-    //check.assert("rstFileConvert smblink role BROKEN_LINK count", (BROKEN_LINK_count == 3)?1:0 , "result is " + "BROKEN_LINK Count is " + BROKEN_LINK_count + " it shuld be 3" );
-    check.assert("rstFileConvert smblink role backslash count", (backslash_count == 4)?1:0 , "result is " + "BROKEN_LINK Count is " + backslash_count + " it shuld be 4" );
+    check.assert("rstFileConvert smblink role backslash count", (backslash_count == 4)?1:0 , "result is " + "backslash count is " + backslash_count + " it shuld be 4" );
   } catch (result) {
     check.assert("rstFileConvert smblink role", !result , "result is " + result.description );
   }
